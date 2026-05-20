@@ -1,0 +1,447 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+---
+<BaseLayout title="30-Day Pile Tracker — Soil Detective" description="Journal a 250-gallon hot compost pile from day 1 to finish: ingredients, daily temperatures, turns, moisture, notes.">
+  <section class="container-x pt-16 pb-6">
+    <p class="eyebrow mb-4">Community · 30-Day Pile Tracker</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Journal a pile from <span class="italic text-moss-700">first build to finish.</span>
+    </h1>
+    <p class="mt-5 text-soil/75 max-w-prose leading-relaxed">
+      Built for a standard 250-gallon hot pile. Your data stays in this browser only — no account, no server. Export to CSV when you're done.
+    </p>
+  </section>
+
+  <!-- Save-your-work notice -->
+  <section class="container-x pb-4">
+    <div class="rounded-xl bg-gold-500/15 border border-gold-600/40 px-5 py-4 flex flex-wrap gap-3 items-start text-sm">
+      <span class="text-gold-700 shrink-0" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      </span>
+      <p class="text-soil flex-1">
+        <strong>Your data lives in this browser only.</strong> Clearing site data, switching browsers, or using a different device will wipe these journals. Use <strong>Export CSV</strong> at the end of each pile (or sooner) to keep a permanent copy.
+      </p>
+      <button id="exportCsvTop" class="btn-outline-soil !px-4 !py-2 text-[11px] shrink-0">Export now</button>
+    </div>
+  </section>
+
+  <!-- Manager bar -->
+  <section class="container-x pb-6">
+    <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-4 flex flex-wrap gap-3 items-center">
+      <label class="text-[10px] uppercase tracking-[0.18em] text-soil/50 flex items-center gap-2">
+        Pile:
+        <select id="pileSelect" class="ml-1 rounded-md border border-soil/20 bg-cream px-3 py-1.5 text-sm text-soil focus:outline-none focus:border-moss-600"></select>
+      </label>
+      <button id="newPile" class="text-[11px] uppercase tracking-[0.18em] text-moss-700 hover:text-moss-800 font-semibold">+ New pile</button>
+      <button id="renamePile" class="text-[11px] uppercase tracking-[0.18em] text-soil/60 hover:text-soil">Rename</button>
+      <button id="deletePile" class="text-[11px] uppercase tracking-[0.18em] text-clay-500 hover:text-clay-700">Delete</button>
+      <span class="ml-auto flex gap-3">
+        <button id="exportCsv" class="btn-outline-soil !px-4 !py-2 text-[11px]">Export CSV</button>
+      </span>
+    </div>
+  </section>
+
+  <section class="container-x pb-20 grid lg:grid-cols-[1fr_1.6fr] gap-6 items-start">
+    <!-- LEFT: Pile setup + ingredients -->
+    <div class="space-y-6">
+      <div class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-6">
+        <h2 class="text-xl uppercase tracking-wide">Pile Setup</h2>
+        <div class="mt-4 space-y-4">
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-soil/60">Build date (day 1)</span>
+            <input id="startDate" type="date" class="mt-1 w-full rounded-md border border-soil/20 bg-cream px-3 py-2 text-sm text-soil focus:outline-none focus:border-moss-600" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-soil/60">Volume (gallons)</span>
+            <input id="volume" type="number" min="0" step="10" value="250" class="mt-1 w-full rounded-md border border-soil/20 bg-cream px-3 py-2 text-sm text-soil focus:outline-none focus:border-moss-600" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-soil/60">Location</span>
+            <input id="location" type="text" placeholder="e.g. Back yard, west bed, shaded corner" class="mt-1 w-full rounded-md border border-soil/20 bg-cream px-3 py-2 text-sm text-soil focus:outline-none focus:border-moss-600" />
+          </label>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl uppercase tracking-wide">Ingredients</h2>
+          <button id="addIng" class="text-[11px] uppercase tracking-[0.18em] text-moss-700 hover:text-moss-800 font-semibold">+ Add</button>
+        </div>
+        <p id="recipeSummary" class="text-soil/60 text-sm mt-2 italic"></p>
+        <div id="ingRows" class="mt-4 space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 30-day grid + chart -->
+    <div class="space-y-6">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-4">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Days logged</p>
+          <p class="mt-1 font-display text-3xl text-soil"><span id="statDays">0</span><span class="text-soil/40 text-lg">/30</span></p>
+        </div>
+        <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-4">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Peak temp</p>
+          <p class="mt-1 font-display text-3xl text-clay-500"><span id="statPeak">—</span></p>
+        </div>
+        <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-4">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Avg temp</p>
+          <p class="mt-1 font-display text-3xl text-soil"><span id="statAvg">—</span></p>
+        </div>
+        <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-4">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Turns</p>
+          <p class="mt-1 font-display text-3xl text-moss-700"><span id="statTurns">0</span></p>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="rounded-2xl bg-soil-700 text-cream p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg text-cream uppercase tracking-wide">Temperature curve</h2>
+          <div class="flex gap-3 text-[10px] uppercase tracking-[0.18em] text-cream/60">
+            <span class="flex items-center gap-1.5"><span class="inline-block size-2 rounded-full bg-moss-300"></span>Ideal zone</span>
+            <span class="flex items-center gap-1.5"><span class="inline-block size-2 rounded-full bg-gold-500"></span>Your pile</span>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <svg id="chart" viewBox="0 0 720 240" preserveAspectRatio="none" class="w-full h-56"></svg>
+        </div>
+        <div class="mt-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-cream/50">
+          <span>Day 1</span>
+          <span>Day 10</span>
+          <span>Day 20</span>
+          <span>Day 30</span>
+        </div>
+      </div>
+
+      <!-- Daily grid -->
+      <div class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-6">
+        <h2 class="text-xl uppercase tracking-wide">Daily log</h2>
+        <p class="text-soil/60 text-sm mt-1">Enter the high temperature reading from the pile core each day. Check the box on turn days.</p>
+        <div id="daysGrid" class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-soil-700 text-cream">
+    <div class="container-x py-16 grid md:grid-cols-3 gap-8">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500 mb-2">Day 1–3</p>
+        <h3 class="font-display text-2xl text-cream">Mesophilic warmup</h3>
+        <p class="mt-2 text-cream/75 text-sm">Pile climbs from ambient toward 100°F. Microbes wake up. No turning needed yet.</p>
+      </div>
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500 mb-2">Day 3–14</p>
+        <h3 class="font-display text-2xl text-cream">Thermophilic peak</h3>
+        <p class="mt-2 text-cream/75 text-sm">Target 130–160°F. Turn when temps drop more than ~10° from the peak. Pathogens die in this window.</p>
+      </div>
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500 mb-2">Day 14–30</p>
+        <h3 class="font-display text-2xl text-cream">Curing</h3>
+        <p class="mt-2 text-cream/75 text-sm">Temps fall back below 100°F. Fungi take over and build structure. Don't turn — let it finish.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const KEY = 'soildetective.piles';
+    type Day = { day: number; tempF: number | null; turned: boolean; moisture: string; notes: string };
+    type Ingredient = { name: string; weight: number; cn: number | null };
+    type Pile = { id: string; name: string; startDate: string; volume: number; location: string; ingredients: Ingredient[]; days: Day[] };
+
+    function load(): Pile[] {
+      try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+    }
+    function save(piles: Pile[]) { localStorage.setItem(KEY, JSON.stringify(piles)); }
+    function uid() { return Math.random().toString(36).slice(2, 10); }
+
+    function newPile(name = 'New pile'): Pile {
+      return {
+        id: uid(),
+        name,
+        startDate: new Date().toISOString().slice(0, 10),
+        volume: 250,
+        location: '',
+        ingredients: [],
+        days: Array.from({ length: 30 }, (_, i) => ({ day: i + 1, tempF: null, turned: false, moisture: '', notes: '' })),
+      };
+    }
+
+    let piles = load();
+    let currentId: string | null = null;
+
+    // Hydrate from draft recipe if present
+    try {
+      const draft = sessionStorage.getItem('soildetective.draftRecipe');
+      if (draft && piles.length === 0) {
+        const d = JSON.parse(draft);
+        const p = newPile('From recipe builder');
+        p.ingredients = (d.ingredients || []).map((i: any) => ({ name: i.name, weight: i.weight, cn: i.cn ?? null }));
+        if (d.totalVolume) p.volume = Math.round(d.totalVolume);
+        piles.push(p);
+        save(piles);
+        sessionStorage.removeItem('soildetective.draftRecipe');
+      } else if (draft) {
+        if (confirm('A recipe from the Recipe Builder is ready. Start a new pile with those ingredients?')) {
+          const d = JSON.parse(draft);
+          const p = newPile('From recipe builder');
+          p.ingredients = (d.ingredients || []).map((i: any) => ({ name: i.name, weight: i.weight, cn: i.cn ?? null }));
+          if (d.totalVolume) p.volume = Math.round(d.totalVolume);
+          piles.push(p);
+          save(piles);
+        }
+        sessionStorage.removeItem('soildetective.draftRecipe');
+      }
+    } catch {}
+
+    if (piles.length === 0) {
+      piles.push(newPile('My first pile'));
+      save(piles);
+    }
+    currentId = piles[piles.length - 1].id;
+
+    const $ = (id: string) => document.getElementById(id)!;
+
+    function current(): Pile { return piles.find((p) => p.id === currentId)!; }
+
+    function renderPileSelect() {
+      const sel = $('pileSelect') as HTMLSelectElement;
+      sel.innerHTML = '';
+      piles.forEach((p) => {
+        const o = document.createElement('option');
+        o.value = p.id; o.textContent = `${p.name} · started ${p.startDate}`;
+        if (p.id === currentId) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+
+    function renderSetup() {
+      const p = current();
+      ($('startDate') as HTMLInputElement).value = p.startDate;
+      ($('volume') as HTMLInputElement).value = String(p.volume);
+      ($('location') as HTMLInputElement).value = p.location;
+    }
+
+    function computeCN(ings: Ingredient[]) {
+      let c = 0, n = 0;
+      for (const i of ings) {
+        if (!i.weight || !i.cn) continue;
+        const nShare = i.weight / (i.cn + 1);
+        n += nShare; c += i.weight - nShare;
+      }
+      return n > 0 ? c / n : null;
+    }
+
+    function renderIngredients() {
+      const p = current();
+      const wrap = $('ingRows');
+      wrap.innerHTML = '';
+      p.ingredients.forEach((ing, idx) => {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-[1fr_70px_60px_auto] gap-2 items-center';
+        row.innerHTML = `
+          <input data-ing="${idx}" data-f="name" type="text" value="${ing.name.replace(/"/g, '&quot;')}" class="w-full rounded-md border border-soil/20 bg-cream px-2 py-1.5 text-sm text-soil focus:outline-none focus:border-moss-600" />
+          <input data-ing="${idx}" data-f="weight" type="number" min="0" step="1" value="${ing.weight || 0}" class="w-full rounded-md border border-soil/20 bg-cream px-2 py-1.5 text-sm text-right text-soil focus:outline-none focus:border-moss-600" />
+          <input data-ing="${idx}" data-f="cn" type="number" min="0" step="1" value="${ing.cn ?? ''}" placeholder="C:N" class="w-full rounded-md border border-soil/20 bg-cream px-2 py-1.5 text-sm text-right text-soil focus:outline-none focus:border-moss-600" />
+          <button data-ing="${idx}" data-f="del" class="text-soil/40 hover:text-clay-500 px-1.5" aria-label="Remove">✕</button>
+        `;
+        wrap.appendChild(row);
+      });
+      const cn = computeCN(p.ingredients);
+      const totalW = p.ingredients.reduce((a, i) => a + (i.weight || 0), 0);
+      $('recipeSummary').textContent = p.ingredients.length === 0 ? 'No ingredients logged yet.' : `${totalW} lbs total · C:N ${cn ? cn.toFixed(1) + ':1' : '—'}`;
+    }
+
+    function renderDays() {
+      const p = current();
+      const wrap = $('daysGrid');
+      wrap.innerHTML = '';
+      p.days.forEach((d, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'rounded-lg border border-soil/10 bg-cream p-3';
+        const tempColor = d.tempF == null ? 'text-soil/30' : d.tempF >= 130 && d.tempF <= 160 ? 'text-moss-700' : d.tempF >= 100 ? 'text-clay-500' : 'text-soil/50';
+        cell.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Day ${d.day}</span>
+            <label class="flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] text-soil/60">
+              <input data-day="${idx}" data-f="turned" type="checkbox" ${d.turned ? 'checked' : ''} class="rounded border-soil/30" /> Turn
+            </label>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <input data-day="${idx}" data-f="tempF" type="number" min="40" max="200" value="${d.tempF ?? ''}" placeholder="°F" class="w-full font-display text-2xl ${tempColor} bg-transparent focus:outline-none border-b border-soil/10 focus:border-moss-600" />
+          </div>
+          <input data-day="${idx}" data-f="notes" type="text" value="${(d.notes || '').replace(/"/g, '&quot;')}" placeholder="Notes…" class="mt-2 w-full text-xs text-soil/70 bg-transparent focus:outline-none placeholder-soil/30 border-b border-transparent focus:border-soil/20" />
+        `;
+        wrap.appendChild(cell);
+      });
+      renderChart();
+      renderStats();
+    }
+
+    function renderStats() {
+      const p = current();
+      const temps = p.days.map((d) => d.tempF).filter((t): t is number => t != null);
+      $('statDays').textContent = String(temps.length);
+      $('statPeak').textContent = temps.length ? Math.max(...temps).toFixed(0) + '°' : '—';
+      $('statAvg').textContent = temps.length ? (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(0) + '°' : '—';
+      $('statTurns').textContent = String(p.days.filter((d) => d.turned).length);
+    }
+
+    function renderChart() {
+      const p = current();
+      const svg = $('chart')!;
+      const W = 720, H = 240, padL = 32, padR = 8, padT = 12, padB = 24;
+      const tMin = 40, tMax = 180;
+      const x = (day: number) => padL + ((day - 1) / 29) * (W - padL - padR);
+      const y = (t: number) => padT + (1 - (t - tMin) / (tMax - tMin)) * (H - padT - padB);
+
+      const idealTop = y(160), idealBottom = y(130);
+      let html = '';
+      // Ideal band
+      html += `<rect x="${padL}" y="${idealTop}" width="${W - padL - padR}" height="${idealBottom - idealTop}" fill="rgba(161,183,147,0.18)" />`;
+      // Gridlines + labels
+      for (const t of [60, 100, 130, 160]) {
+        const yy = y(t);
+        html += `<line x1="${padL}" y1="${yy}" x2="${W - padR}" y2="${yy}" stroke="rgba(244,241,234,0.1)" stroke-width="1" />`;
+        html += `<text x="6" y="${yy + 3}" fill="rgba(244,241,234,0.4)" font-size="9" font-family="Inter, sans-serif">${t}°</text>`;
+      }
+      // Day axis ticks
+      for (let d = 1; d <= 30; d += 5) {
+        const xx = x(d);
+        html += `<line x1="${xx}" y1="${H - padB}" x2="${xx}" y2="${H - padB + 4}" stroke="rgba(244,241,234,0.3)" />`;
+      }
+      // Pile line
+      const points = p.days.filter((d) => d.tempF != null).map((d) => `${x(d.day)},${y(d.tempF!)}`);
+      if (points.length > 1) {
+        html += `<polyline points="${points.join(' ')}" fill="none" stroke="#C8A96A" stroke-width="2.5" stroke-linejoin="round" />`;
+      }
+      // Dots
+      p.days.forEach((d) => {
+        if (d.tempF != null) {
+          html += `<circle cx="${x(d.day)}" cy="${y(d.tempF)}" r="3.5" fill="#C8A96A" />`;
+        }
+        if (d.turned) {
+          html += `<line x1="${x(d.day)}" y1="${padT}" x2="${x(d.day)}" y2="${H - padB}" stroke="rgba(125,94,128,0.5)" stroke-width="1" stroke-dasharray="3 3" />`;
+        }
+      });
+      svg.innerHTML = html;
+    }
+
+    function renderAll() {
+      renderPileSelect();
+      renderSetup();
+      renderIngredients();
+      renderDays();
+    }
+
+    // Events
+    $('pileSelect').addEventListener('change', (e) => {
+      currentId = (e.target as HTMLSelectElement).value;
+      renderAll();
+    });
+    $('newPile').addEventListener('click', () => {
+      const name = prompt('Name this pile:', `Pile ${piles.length + 1}`);
+      if (!name) return;
+      const p = newPile(name);
+      piles.push(p); currentId = p.id; save(piles); renderAll();
+    });
+    $('renamePile').addEventListener('click', () => {
+      const p = current();
+      const name = prompt('Rename pile:', p.name);
+      if (!name) return;
+      p.name = name; save(piles); renderPileSelect();
+    });
+    $('deletePile').addEventListener('click', () => {
+      if (!confirm(`Delete "${current().name}"? This cannot be undone.`)) return;
+      piles = piles.filter((p) => p.id !== currentId);
+      if (piles.length === 0) piles.push(newPile('My first pile'));
+      currentId = piles[0].id;
+      save(piles); renderAll();
+    });
+
+    ['startDate', 'volume', 'location'].forEach((id) => {
+      $(id).addEventListener('input', () => {
+        const p = current();
+        if (id === 'startDate') p.startDate = ($(id) as HTMLInputElement).value;
+        if (id === 'volume') p.volume = Number(($(id) as HTMLInputElement).value) || 0;
+        if (id === 'location') p.location = ($(id) as HTMLInputElement).value;
+        save(piles);
+        if (id === 'startDate') renderPileSelect();
+      });
+    });
+
+    $('addIng').addEventListener('click', () => {
+      current().ingredients.push({ name: '', weight: 0, cn: null });
+      save(piles); renderIngredients();
+    });
+    $('ingRows').addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      const idx = Number(t.dataset.ing);
+      const f = t.dataset.f;
+      if (isNaN(idx) || !f) return;
+      const ing = current().ingredients[idx];
+      if (f === 'name') ing.name = t.value;
+      if (f === 'weight') ing.weight = Number(t.value) || 0;
+      if (f === 'cn') ing.cn = t.value === '' ? null : Number(t.value);
+      save(piles);
+      const cn = computeCN(current().ingredients);
+      const totalW = current().ingredients.reduce((a, i) => a + (i.weight || 0), 0);
+      $('recipeSummary').textContent = `${totalW} lbs total · C:N ${cn ? cn.toFixed(1) + ':1' : '—'}`;
+    });
+    $('ingRows').addEventListener('click', (e) => {
+      const t = e.target as HTMLButtonElement;
+      if (t.dataset?.f !== 'del') return;
+      const idx = Number(t.dataset.ing);
+      current().ingredients.splice(idx, 1);
+      save(piles); renderIngredients();
+    });
+
+    $('daysGrid').addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      const idx = Number(t.dataset.day);
+      const f = t.dataset.f;
+      if (isNaN(idx) || !f) return;
+      const d = current().days[idx];
+      if (f === 'tempF') d.tempF = t.value === '' ? null : Number(t.value);
+      if (f === 'notes') d.notes = t.value;
+      save(piles);
+      if (f === 'tempF') { renderChart(); renderStats(); }
+    });
+    $('daysGrid').addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.dataset.f !== 'turned') return;
+      const idx = Number(t.dataset.day);
+      current().days[idx].turned = t.checked;
+      save(piles); renderChart(); renderStats();
+    });
+
+    const doExport = () => {
+      const p = current();
+      const lines = [
+        `Pile,${p.name}`,
+        `Start date,${p.startDate}`,
+        `Volume (gal),${p.volume}`,
+        `Location,"${p.location || ''}"`,
+        '',
+        'Ingredients',
+        'Name,Weight (lbs),C:N',
+        ...p.ingredients.map((i) => `"${i.name}",${i.weight || 0},${i.cn ?? ''}`),
+        '',
+        'Daily log',
+        'Day,Temp (F),Turned,Notes',
+        ...p.days.map((d) => `${d.day},${d.tempF ?? ''},${d.turned ? 'yes' : ''},"${(d.notes || '').replace(/"/g, '""')}"`),
+      ];
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${p.name.replace(/[^a-z0-9-]/gi, '-').toLowerCase()}-${p.startDate}.csv`;
+      a.click();
+    };
+    $('exportCsv').addEventListener('click', doExport);
+    $('exportCsvTop').addEventListener('click', doExport);
+
+    renderAll();
+  </script>
+</BaseLayout>

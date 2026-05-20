@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+type Listing = {
+  name: string;
+  owner: string;
+  area: string;
+  status: 'available' | 'on loan' | 'maintenance';
+  deposit?: string;
+  body: string;
+  category: 'Power' | 'Soil & Compost' | 'Microscopy' | 'Hand tools' | 'Hauling';
+};
+
+const listings: Listing[] = [
+  { name: 'Gas chipper-shredder (5HP)', owner: 'Soil Detective', area: 'Westside Olympia', status: 'available', deposit: '$25 / day donation', category: 'Power', body: 'Chips branches up to 2" diameter — perfect for prepping brown material before a hot pile build. Pickup only; trailer recommended.' },
+  { name: 'Compost thermometer (36" probe)', owner: 'Juanita', area: 'Eastside', status: 'available', category: 'Soil & Compost', body: 'REOTEMP 36" dial thermometer, calibrated. Loan it for the full 30-day pile cycle.' },
+  { name: 'Compound microscope (400×)', owner: 'Soil Detective', area: 'Lab — Westside', status: 'available', deposit: '$50 deposit', category: 'Microscopy', body: 'Loaned for at-home soil checks for trained members. Includes slides, cover slips, and a quick-reference card.' },
+  { name: 'Broadfork (30" wide)', owner: 'Xavier', area: 'Southside', status: 'on loan', category: 'Hand tools', body: 'Heavy-duty broadfork — loosens compacted beds without tilling. Currently with a member through next weekend.' },
+  { name: 'Garden cart (heavy-duty)', owner: 'Sophia', area: 'Northside', status: 'available', category: 'Hauling', body: 'Steel cart, pneumatic tires, 400 lb capacity. Great for moving finished compost and prepping ingredients.' },
+  { name: 'Sifting screen (½" mesh, 3×4 ft)', owner: 'Soil Detective', area: 'Lab — Westside', status: 'available', category: 'Soil & Compost', body: 'For screening finished compost into a uniform soil amendment. Two people make quick work.' },
+  { name: 'Pump-up sprayer (2 gallon)', owner: 'Juanita', area: 'Eastside', status: 'maintenance', category: 'Soil & Compost', body: 'For applying compost teas and biological extracts. Currently being cleaned — back next week.' },
+  { name: 'Manure fork (5-tine)', owner: 'Xavier', area: 'Southside', status: 'available', category: 'Hand tools', body: 'The right tool for turning a pile — long handle, light, doesn\'t spear food scraps the way a shovel does.' },
+];
+
+const statusClass = (s: string) => {
+  if (s === 'available') return 'bg-moss-700/15 text-moss-700';
+  if (s === 'on loan') return 'bg-clay-500/15 text-clay-700';
+  return 'bg-soil/10 text-soil/60';
+};
+---
+<BaseLayout title="Tool Barn — Soil Detective" description="A community lending library of composting and gardening tools shared by Soil Detective members.">
+  <section class="container-x pt-16 pb-8">
+    <p class="eyebrow mb-4">Community · Tool Barn</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Borrow what you need. <span class="italic text-moss-700">Share what you have.</span>
+    </h1>
+    <p class="mt-5 text-soil/75 max-w-prose leading-relaxed">
+      A neighborhood lending library for composting and soil work. Everything here was offered by a Soil Detective member. Email Soil Detective and we will connect you with the owner.
+    </p>
+  </section>
+
+  <!-- Filter bar -->
+  <section class="container-x pb-6">
+    <div class="rounded-xl bg-cream-dark/30 border border-soil/10 p-3 flex flex-wrap gap-2 items-center">
+      <span class="text-[10px] uppercase tracking-[0.18em] text-soil/50 px-2">Filter</span>
+      <button class="filter-btn active" data-filter="all">All ({listings.length})</button>
+      {['Power', 'Soil & Compost', 'Microscopy', 'Hand tools', 'Hauling'].map((c) => (
+        <button class="filter-btn" data-filter={c}>{c}</button>
+      ))}
+      <span class="ml-auto text-[10px] uppercase tracking-[0.18em] text-soil/50 px-2 hidden sm:inline">Showing <span id="visibleCount">{listings.length}</span></span>
+    </div>
+  </section>
+
+  <!-- Listings -->
+  <section class="container-x pb-16">
+    <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {listings.map((l) => (
+        <article class="listing rounded-2xl bg-cream-dark/30 border border-soil/10 p-6 flex flex-col" data-category={l.category}>
+          <div class="flex items-start justify-between gap-3">
+            <h2 class="text-lg uppercase tracking-wide leading-snug">{l.name}</h2>
+            <span class={`text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-full whitespace-nowrap ${statusClass(l.status)}`}>{l.status}</span>
+          </div>
+          <p class="mt-1 text-xs text-soil/55">{l.category} · {l.area}</p>
+          <p class="mt-3 text-sm text-soil/75 leading-relaxed flex-1">{l.body}</p>
+          <div class="mt-4 pt-4 border-t border-soil/10 text-xs text-soil/60 flex justify-between gap-3">
+            <span>Owner: <strong class="text-soil">{l.owner}</strong></span>
+            {l.deposit && <span class="text-clay-500">{l.deposit}</span>}
+          </div>
+          <a
+            href={`mailto:soildetective@gmail.com?subject=Tool%20Barn%20-%20Borrow%20${encodeURIComponent(l.name)}&body=Hi%2C%20I'd%20like%20to%20borrow%20the%20${encodeURIComponent(l.name)}%20from%20${encodeURIComponent(l.owner)}.%20My%20name%20is%3A%20%0AContact%20info%3A%20%0AWhen%20I'd%20need%20it%3A%20%0A`}
+            class={l.status === 'available' ? 'btn-moss mt-4 !px-4 !py-2 text-[11px]' : 'btn-outline-soil mt-4 !px-4 !py-2 text-[11px] pointer-events-none opacity-50'}
+            aria-disabled={l.status !== 'available'}
+          >
+            {l.status === 'available' ? 'Request to Borrow' : 'Unavailable'}
+          </a>
+        </article>
+      ))}
+    </div>
+    <p id="emptyState" class="hidden text-center text-soil/50 italic py-12">No tools match this filter.</p>
+  </section>
+
+  <!-- Share a tool -->
+  <section class="bg-soil-700 text-cream">
+    <div class="container-x py-16 grid lg:grid-cols-[1fr_1.2fr] gap-10">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-500 mb-3">Share a tool</p>
+        <h2 class="text-3xl md:text-4xl text-cream">Got something useful sitting in the garage?</h2>
+        <p class="mt-4 text-cream/85 max-w-prose leading-relaxed">
+          List it here. We'll vet the listing, post it, and route borrow requests through us so you never have to give your contact info out publicly.
+        </p>
+        <ul class="mt-6 space-y-2 text-cream/80 text-sm">
+          <li class="flex gap-2"><span class="text-gold-500">·</span> You set the terms (deposit, loan length, drop-off).</li>
+          <li class="flex gap-2"><span class="text-gold-500">·</span> We screen requests and introduce only people we trust.</li>
+          <li class="flex gap-2"><span class="text-gold-500">·</span> Pull your listing anytime.</li>
+        </ul>
+      </div>
+      <form action="mailto:soildetective@gmail.com" method="post" enctype="text/plain" class="rounded-2xl bg-cream/10 border border-cream/20 p-6 space-y-4">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Your name</span>
+            <input required type="text" name="owner_name" class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream placeholder-cream/40 focus:outline-none focus:border-gold-500" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Email</span>
+            <input required type="email" name="owner_email" class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream placeholder-cream/40 focus:outline-none focus:border-gold-500" />
+          </label>
+        </div>
+        <label class="block">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Tool name</span>
+          <input required type="text" name="tool_name" placeholder="e.g. Wheelbarrow, gas leaf shredder, compost thermometer" class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream placeholder-cream/40 focus:outline-none focus:border-gold-500" />
+        </label>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Category</span>
+            <select name="tool_category" class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream focus:outline-none focus:border-gold-500">
+              <option class="text-soil">Power</option>
+              <option class="text-soil">Soil & Compost</option>
+              <option class="text-soil">Microscopy</option>
+              <option class="text-soil">Hand tools</option>
+              <option class="text-soil">Hauling</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Area / neighborhood</span>
+            <input type="text" name="area" placeholder="Westside / Eastside / etc." class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream placeholder-cream/40 focus:outline-none focus:border-gold-500" />
+          </label>
+        </div>
+        <label class="block">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-cream/70">Description, condition, terms</span>
+          <textarea name="description" rows="4" class="mt-1 w-full rounded-md bg-cream/10 border border-cream/30 px-3 py-2 text-cream placeholder-cream/40 focus:outline-none focus:border-gold-500"></textarea>
+        </label>
+        <button type="submit" class="btn-gold w-full">Submit Listing</button>
+        <p class="text-xs text-cream/60">We'll review and post within a few days. Your email is kept private.</p>
+      </form>
+    </div>
+  </section>
+
+  <style>
+    .filter-btn {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      border: 1px solid rgb(43 30 23 / 0.15);
+      color: rgb(43 30 23 / 0.7);
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { color: rgb(43 30 23); border-color: rgb(43 30 23 / 0.4); }
+    .filter-btn.active { background: rgb(43 30 23); color: rgb(244 241 234); border-color: rgb(43 30 23); }
+  </style>
+
+  <script>
+    const buttons = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.listing');
+    const visibleCount = document.getElementById('visibleCount');
+    const emptyState = document.getElementById('emptyState');
+    buttons.forEach((btn) => btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = (btn as HTMLElement).dataset.filter;
+      let shown = 0;
+      items.forEach((el) => {
+        const cat = (el as HTMLElement).dataset.category;
+        const show = filter === 'all' || cat === filter;
+        (el as HTMLElement).style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      if (visibleCount) visibleCount.textContent = String(shown);
+      if (emptyState) emptyState.classList.toggle('hidden', shown > 0);
+    }));
+  </script>
+</BaseLayout>

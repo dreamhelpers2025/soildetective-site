@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const compost = `${cdn}/6df1e447-ca22-4c78-aff8-1b0c9d881f62/20250731_104722.jpg?format=1500w`;
+const hands = `${cdn}/5720fe20-8bd9-48de-9f3c-11b1998a4ea3/3_6.20.2025.jpg?format=1500w`;
+const xavier = `${cdn}/d3641eb1-72ac-4d59-b446-5798575c3ac0/25-07-18-Xaviers+Legs.00_01_01_26.Still001.jpg?format=1500w`;
+const sophia = `${cdn}/50411418-9279-4e75-923e-35d8914c8e79/Sophia+8.31.25.m.jpg?format=1500w`;
+
+const products = [
+  { name: "Juanita's Premium Compost", price: 'from $50', sub: '1-Gallon · 5-Gallons', body: 'Our flagship living compost. Diverse biology, finished texture, ready to top-dress beds, fill containers, or jump-start a new planting.', stock: 'Available', image: compost },
+  { name: 'Biologically Beneficial Compost Soil Drench', price: '$199', was: '$350', sub: 'Concentrated extract', body: 'A living drench packed with bacteria, fungi, and predators — designed to inoculate large areas with food web biology in a single application.', stock: 'On sale', image: hands },
+  { name: 'Pre-Order Living Compost — 1 Gallon', price: '$45', was: '$50', sub: '1-Gallon', body: 'Reserve a gallon from an upcoming batch. We brew on a roughly 30-day cycle; your gallon is set aside the moment it is ready.', stock: 'Pre-order', image: compost },
+  { name: 'Gift Package: Premium Living Compost — 5 lbs', price: '$65', was: '$75', sub: '5 lb gift box', body: 'A wrapped sampler of our premium living compost — for the gardener, farmer, or houseplant rescuer in your life.', stock: 'Available', image: sophia },
+  { name: "Xavier's Premium Living Compost — 5 lbs", price: '$50', sub: '5 lb', body: 'A signature small-batch blend. Currently out of stock — pre-order to be notified when the next batch is ready.', stock: 'Sold out', image: xavier },
+  { name: 'Bulk Compost Inquiries', price: 'Contact', sub: 'Custom orders', body: 'Farms, market gardens, landscape projects: tell us what you need and where. We will work out a quantity, schedule, and delivery plan.', stock: 'Inquire', image: hands },
+];
+
+const faq = [
+  { q: 'How do I apply it?', a: 'Apply gently to the existing soil. Do not till it in — you want to preserve the structure the biology has already built.' },
+  { q: 'Will it work in my region?', a: 'These products are specifically formulated with microorganisms native to Western Washington. They are at their best in that bioregion.' },
+  { q: 'How is it made?', a: 'Each pile starts from about 250 gallons of raw materials harvested from our own Soil Detective gardens, and is brewed for roughly 30 days — about 60 hours of gathering, prep, and assembly per batch.' },
+  { q: 'Can you deliver?', a: 'Yes — local delivery is $50, and delivery within 100 miles of Olympia is $250. Pickup is also available.' },
+];
+
+const stockClass = (stock: string) => {
+  if (stock === 'Sold out') return 'bg-soil/10 text-soil/60';
+  if (stock === 'On sale') return 'bg-clay-500/15 text-clay-700';
+  if (stock === 'Pre-order') return 'bg-plum-700/15 text-plum-700';
+  return 'bg-moss-700/15 text-moss-700';
+};
+---
+<BaseLayout title="Shop Living Compost — Soil Detective" description="Biologically diverse, small-batch living compost and compost extracts crafted in Western Washington.">
+  <section class="container-x pt-20 pb-12">
+    <p class="eyebrow mb-4">Living Compost</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Biologically diverse compost, <span class="italic text-moss-700">hand-built</span> in small batches.
+    </h1>
+    <p class="mt-6 text-soil/75 max-w-prose leading-relaxed">
+      Artisan compost made from raw materials harvested in our own Soil Detective gardens. Brewed over roughly 30 days with about 60 hours of hands-on gathering, preparation, and assembly per pile.
+    </p>
+  </section>
+
+  <section class="container-x pb-16">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {products.map((p) => (
+        <article class="rounded-xl bg-cream-dark/30 border border-soil/10 overflow-hidden flex flex-col">
+          <div class="aspect-[16/10] overflow-hidden bg-soil-700">
+            <img src={p.image} alt={p.name} class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-6 flex flex-col flex-1">
+            <span class={`self-start text-[10px] uppercase tracking-[0.2em] px-2.5 py-1 rounded-full ${stockClass(p.stock)}`}>{p.stock}</span>
+            <h2 class="mt-4 text-lg uppercase tracking-wide leading-snug">{p.name}</h2>
+            <div class="mt-2">
+              <span class="font-display text-2xl text-soil">{p.price}</span>
+              {p.was && <span class="ml-2 text-soil/40 line-through text-sm">{p.was}</span>}
+            </div>
+            <p class="text-soil/60 text-xs mt-1">{p.sub}</p>
+            <p class="mt-4 text-soil/75 text-sm leading-relaxed flex-1">{p.body}</p>
+            <a href={link('/contact')} class="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-clay-500 hover:text-clay-700">Order or inquire →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-cream-dark/30 border-y border-soil/5">
+    <div class="container-x py-20 grid md:grid-cols-2 gap-12">
+      <div>
+        <p class="eyebrow-moss mb-3">Compost FAQ</p>
+        <h2 class="text-4xl md:text-5xl">A few honest answers.</h2>
+        <p class="mt-5 text-soil/80 max-w-prose leading-relaxed">
+          We try to be plain about what living compost is — and is not. If your question isn't here, send us a note.
+        </p>
+        <div class="mt-8">
+          <a href={link('/contact')} class="btn-moss">Ask a Question</a>
+        </div>
+      </div>
+      <dl class="space-y-5">
+        {faq.map((f) => (
+          <div class="rounded-xl bg-cream p-6 border border-soil/10">
+            <dt class="font-display text-lg text-soil">{f.q}</dt>
+            <dd class="mt-2 text-soil/75 leading-relaxed">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="container-x py-20">
+    <div class="rounded-2xl bg-clay-500 text-cream p-10 md:p-14 grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+      <div>
+        <h2 class="text-3xl md:text-4xl text-cream">Need a lot of compost?</h2>
+        <p class="mt-4 text-cream/90 max-w-prose">
+          For farms, market gardens, and landscape projects, we put together custom bulk orders with a delivery plan that works for your site.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="mailto:soildetective@gmail.com" class="btn-light">Email Us</a>
+        <a href="tel:+13602593637" class="btn-outline-cream">(360) 259-3637</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

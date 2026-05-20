@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+type Recipe = {
+  name: string;
+  season: string;
+  cn: number;
+  greens: number; // pct by weight
+  browns: number;
+  best: string;
+  ingredients: { name: string; weight: number }[];
+  notes: string;
+};
+
+const recipes: Recipe[] = [
+  {
+    name: 'Spring Garden Kickstart',
+    season: 'Spring',
+    cn: 28,
+    greens: 38,
+    browns: 62,
+    best: 'For starting beds and feeding tomato / brassica transplants.',
+    ingredients: [
+      { name: 'Aged horse manure', weight: 120 },
+      { name: 'Dry leaves (fall harvested)', weight: 100 },
+      { name: 'Fresh grass clippings', weight: 60 },
+      { name: 'Shredded cardboard', weight: 40 },
+      { name: 'Coffee grounds (café pickup)', weight: 30 },
+      { name: 'Finished compost (starter)', weight: 25 },
+    ],
+    notes: 'Climbs to 145°F by day 3 in our trials. Turn on days 4, 8, and 14.',
+  },
+  {
+    name: 'Summer Kitchen Pile',
+    season: 'Summer',
+    cn: 30,
+    greens: 45,
+    browns: 55,
+    best: 'High-volume kitchen and yard waste in peak growing months.',
+    ingredients: [
+      { name: 'Vegetable / kitchen scraps', weight: 150 },
+      { name: 'Straw', weight: 90 },
+      { name: 'Fresh grass clippings', weight: 80 },
+      { name: 'Shredded newspaper', weight: 30 },
+      { name: 'Aged manure', weight: 60 },
+      { name: 'Comfrey leaves', weight: 20 },
+    ],
+    notes: 'Bury food scraps in the center. Water in well — summer piles dry out fast.',
+  },
+  {
+    name: 'Fall Leaf Bonanza',
+    season: 'Fall',
+    cn: 32,
+    greens: 30,
+    browns: 70,
+    best: 'When the leaves drop and you need to use them all before winter.',
+    ingredients: [
+      { name: 'Dry leaves (shredded)', weight: 250 },
+      { name: 'Fresh chicken manure', weight: 40 },
+      { name: 'Coffee grounds', weight: 50 },
+      { name: 'Vegetable scraps', weight: 80 },
+      { name: 'Fresh seaweed (rinsed)', weight: 30 },
+    ],
+    notes: 'Shred the leaves first or they will mat. Cover the pile to keep rain from leaching N.',
+  },
+  {
+    name: 'Winter Build (PNW)',
+    season: 'Winter',
+    cn: 27,
+    greens: 42,
+    browns: 58,
+    best: 'Building hot in cool, wet Western WA winters.',
+    ingredients: [
+      { name: 'Fresh chicken manure', weight: 50 },
+      { name: 'Straw', weight: 100 },
+      { name: 'Vegetable scraps', weight: 90 },
+      { name: 'Coffee grounds', weight: 50 },
+      { name: 'Shredded cardboard (extra)', weight: 60 },
+      { name: 'Finished compost', weight: 30 },
+    ],
+    notes: 'Use extra cardboard to wick moisture out of an oversaturated pile. Tarp it.',
+  },
+  {
+    name: 'Market Garden Booster',
+    season: 'Year-round',
+    cn: 26,
+    greens: 50,
+    browns: 50,
+    best: 'For growers who need finished compost on a 30–45 day turn.',
+    ingredients: [
+      { name: 'Aged cow manure', weight: 150 },
+      { name: 'Alfalfa meal', weight: 30 },
+      { name: 'Straw', weight: 120 },
+      { name: 'Vegetable scraps', weight: 100 },
+      { name: 'Coffee grounds', weight: 40 },
+      { name: 'Finished compost (starter)', weight: 30 },
+    ],
+    notes: 'Hotter and faster — expect 155°F+ peaks. Turn every 3–4 days.',
+  },
+  {
+    name: 'Pure Plant Pile (vegan)',
+    season: 'Year-round',
+    cn: 29,
+    greens: 40,
+    browns: 60,
+    best: 'No animal manure — works fine, just needs more attention.',
+    ingredients: [
+      { name: 'Alfalfa meal', weight: 60 },
+      { name: 'Vegetable scraps', weight: 130 },
+      { name: 'Fresh grass clippings', weight: 80 },
+      { name: 'Straw', weight: 100 },
+      { name: 'Dry leaves', weight: 60 },
+      { name: 'Coffee grounds', weight: 50 },
+    ],
+    notes: 'Alfalfa is the N workhorse here. Soak the straw before layering.',
+  },
+];
+---
+<BaseLayout title="Example Recipes — Soil Detective" description="Field-tested 250-gallon hot compost recipes by season and use case.">
+  <section class="container-x pt-16 pb-8">
+    <p class="eyebrow mb-4">Community · Example Recipes</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Recipes that actually <span class="italic text-moss-700">get hot.</span>
+    </h1>
+    <p class="mt-5 text-soil/75 max-w-prose leading-relaxed">
+      All sized for a standard 250-gallon (~1 yd³) hot pile and tested in our own Soil Detective gardens. Tap any recipe to open it in the Recipe Builder and tweak it for what you actually have on hand.
+    </p>
+  </section>
+
+  <section class="container-x pb-20">
+    <div class="grid md:grid-cols-2 gap-6">
+      {recipes.map((r) => (
+        <article class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-7 flex flex-col">
+          <div class="flex items-baseline justify-between gap-3">
+            <h2 class="text-2xl uppercase tracking-wide">{r.name}</h2>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-clay-500 bg-clay-500/10 px-2.5 py-1 rounded-full shrink-0">{r.season}</span>
+          </div>
+          <p class="mt-3 text-soil/75 text-sm">{r.best}</p>
+
+          <dl class="mt-5 grid grid-cols-3 gap-3 text-sm">
+            <div class="rounded-lg bg-cream p-3">
+              <dt class="text-[10px] uppercase tracking-[0.18em] text-soil/50">C:N</dt>
+              <dd class="font-display text-2xl text-soil">{r.cn}:1</dd>
+            </div>
+            <div class="rounded-lg bg-cream p-3">
+              <dt class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Greens</dt>
+              <dd class="font-display text-2xl text-moss-700">{r.greens}%</dd>
+            </div>
+            <div class="rounded-lg bg-cream p-3">
+              <dt class="text-[10px] uppercase tracking-[0.18em] text-soil/50">Browns</dt>
+              <dd class="font-display text-2xl text-clay-500">{r.browns}%</dd>
+            </div>
+          </dl>
+
+          <div class="mt-5">
+            <p class="text-[11px] uppercase tracking-[0.18em] text-soil/50 mb-2">Ingredients</p>
+            <ul class="space-y-1.5 text-sm">
+              {r.ingredients.map((i) => (
+                <li class="flex justify-between gap-3 border-b border-soil/10 py-1.5">
+                  <span class="text-soil/85">{i.name}</span>
+                  <span class="text-soil/60 font-mono text-xs">{i.weight} lbs</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p class="mt-5 text-sm text-soil/70 italic">{r.notes}</p>
+
+          <div class="mt-6 flex gap-3">
+            <a href={link('/community/recipe-builder')} class="btn-moss !px-4 !py-2 text-[11px]">Open in Builder</a>
+            <a href={link('/community/pile-tracker')} class="btn-outline-soil !px-4 !py-2 text-[11px]">Track a Pile</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-soil-700 text-cream">
+    <div class="container-x py-16 grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-500 mb-3">Got a recipe that works?</p>
+        <h2 class="text-3xl md:text-4xl text-cream">Share it with us.</h2>
+        <p class="mt-4 text-cream/85 max-w-prose">
+          We are always collecting field-tested recipes from local growers. Send us yours and we will add it to this page (with credit).
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="mailto:soildetective@gmail.com?subject=Recipe%20submission" class="btn-gold">Submit a Recipe</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

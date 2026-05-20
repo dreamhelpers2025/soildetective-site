@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const scope = `${cdn}/03ce3214-9cd9-44dc-bbb6-a9f13e2adf9b/Scope+n+Monitor.jpg?format=1500w`;
+const garden = `${cdn}/145735a9-0f67-4282-97dd-957d7db71867/20230508_121328.jpg?format=1500w`;
+
+const events = [
+  { when: 'Every Sunday', title: 'Soil Lab Sundays', where: 'Olympia, WA — drop-in & by appointment', time: '11 AM – 4 PM (other times by booking)', body: 'Understand the microbial world in your soil with scientific testing and expert recommendations grounded in biology. Bring a sample for one-on-one microscopic analysis with the Soil Detective.', price: '$50 per Soil Health Check · scholarships available', cta: { label: 'Book a Session', href: 'mailto:soildetective@gmail.com' }, image: scope },
+  { when: 'April 24 – 25, 2026', title: "Olympia's Spring Arts Walk", where: 'Booth #24 · Percival Landing', time: 'Fri 5 – 10 PM · Sat 12 – 6 PM', body: 'Soil Detective × The Olympia Soap & Tincture Co. Live microscope demonstrations of microbial diversity, nutrient density measurement, and short talks on nutrient cycling, soil regeneration, and community wellness — alongside artisan soaps and handcrafted herbal tinctures.', price: 'Free to attend', cta: { label: 'Get Directions', href: 'https://maps.google.com/?q=Percival+Landing+Olympia+WA' }, image: garden },
+];
+---
+<BaseLayout title="Events — Soil Detective" description="Soil Lab Sundays, Arts Walk appearances, and community soil-health events.">
+  <section class="container-x pt-20 pb-12">
+    <p class="eyebrow mb-4">Upcoming Events</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Come look through the scope <span class="italic text-moss-700">with us.</span>
+    </h1>
+    <p class="mt-6 text-soil/75 max-w-prose leading-relaxed">
+      Find us at the lab on Sundays, around town at community events, or out at Spring Arts Walk. Bring questions, bring a soil sample, bring a friend.
+    </p>
+  </section>
+
+  <section class="container-x py-12 space-y-6">
+    {events.map((e) => (
+      <article class="rounded-2xl bg-cream-dark/30 border border-soil/10 overflow-hidden grid md:grid-cols-[1fr_1.6fr]">
+        <div class="aspect-[4/3] md:aspect-auto bg-soil-700 overflow-hidden">
+          <img src={e.image} alt={e.title} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-8 md:p-10 grid md:grid-cols-[auto_1fr] gap-8 items-start">
+          <div class="md:w-44 shrink-0">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-clay-500 font-semibold">{e.when}</p>
+            <p class="mt-2 text-soil/70 text-sm">{e.time}</p>
+          </div>
+          <div>
+            <h2 class="text-2xl md:text-3xl">{e.title}</h2>
+            <p class="mt-1 text-soil/65 text-sm">{e.where}</p>
+            <p class="mt-4 text-soil/80 leading-relaxed">{e.body}</p>
+            <p class="mt-4 text-sm font-medium text-soil">{e.price}</p>
+            <div class="mt-5">
+              <a href={e.cta.href} class="btn-moss !px-5 !py-2.5 text-[11px]">{e.cta.label}</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="container-x py-20">
+    <div class="rounded-2xl bg-moss-100 p-10 md:p-14 grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+      <div>
+        <p class="eyebrow-moss mb-3">Don't miss the next one</p>
+        <h2 class="text-4xl md:text-5xl">Stay in the loop.</h2>
+        <p class="mt-4 text-soil/75 max-w-prose leading-relaxed">
+          We send a short, occasional newsletter with upcoming events, workshop dates, and soil-health insights. No filler — we value your inbox.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href={link('/contact')} class="btn-moss">Get the Newsletter</a>
+        <a href={link('/learn')} class="btn-outline-soil">See Workshops</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

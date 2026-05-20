@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const community = `${cdn}/86bfa547-2660-41e8-833c-349f61e6ef4e/Feeling+strong.jpg?format=1500w`;
+const sophia = `${cdn}/50411418-9279-4e75-923e-35d8914c8e79/Sophia+8.31.25.m.jpg?format=1500w`;
+const garden = `${cdn}/145735a9-0f67-4282-97dd-957d7db71867/20230508_121328.jpg?format=1500w`;
+
+const workshops = [
+  {
+    title: 'Introduction to Thermophilic Composting',
+    subtitle: 'The benefits & management of living soil',
+    dates: 'April 1 – May 6, 2026',
+    schedule: 'Wednesdays · 6:00 – 7:30 PM PT',
+    format: 'Live virtual · 6 weeks',
+    body: 'A practical, six-week introduction to building and managing hot, biologically active compost. We cover the soil food web, compost recipes, sourcing raw materials, management tools, and the resilience these systems bring to your garden or farm.',
+    topics: ['Soil food webs', 'Compost recipes', 'Sourcing raw materials', 'Pile management', 'Troubleshooting', 'Building resilience'],
+    image: sophia,
+  },
+  {
+    title: 'Rooted & Rising',
+    subtitle: 'Healing ourselves, our communities, and the earth',
+    dates: 'May 13 – June 17, 2026',
+    schedule: 'Wednesdays · 6:00 – 7:30 PM PT',
+    format: 'Live virtual · 6 weeks',
+    body: 'A trauma-informed series exploring the connections between soil regeneration and community healing — grounded in equity and environmental justice. We hold space for the harder parts of this work alongside the practical skills.',
+    topics: ['Trauma-informed practice', 'Equity & environmental justice', 'Soil & community health', 'Regenerative strategies', 'Personal & collective healing', 'Building local resilience'],
+    image: community,
+  },
+];
+---
+<BaseLayout title="Workshops & Soil Labs — Soil Detective" description="Live virtual workshops, drop-in soil labs, and community events from Soil Detective.">
+  <section class="container-x pt-20 pb-12">
+    <p class="eyebrow mb-4">Workshops & Soil Labs</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Hands-on soil education <span class="italic text-moss-700">for every kind of grower.</span>
+    </h1>
+    <p class="mt-6 text-soil/75 max-w-prose leading-relaxed">
+      Whether you're tending a few pots, running a market farm, or rebuilding a piece of land — there's a place for you here. Live virtual series, drop-in microscope sessions, and community-building events throughout the year.
+    </p>
+  </section>
+
+  <section class="container-x py-12 space-y-8">
+    {workshops.map((w) => (
+      <article class="rounded-2xl bg-cream-dark/30 border border-soil/10 overflow-hidden grid lg:grid-cols-[1fr_1.4fr]">
+        <div class="aspect-[4/3] lg:aspect-auto bg-soil-700 overflow-hidden">
+          <img src={w.image} alt={w.title} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-8 md:p-12 grid md:grid-cols-[1.4fr_1fr] gap-8">
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-clay-500">{w.format}</p>
+            <h2 class="mt-3 text-3xl md:text-4xl">{w.title}</h2>
+            <p class="mt-2 text-soil/65 italic font-display">{w.subtitle}</p>
+            <p class="mt-5 text-soil/75 leading-relaxed text-sm">{w.body}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href={link('/contact')} class="btn-moss">Register Interest</a>
+              <a href="mailto:soildetective@gmail.com" class="btn-outline-soil">Ask a Question</a>
+            </div>
+          </div>
+          <aside class="rounded-xl bg-cream/70 border border-soil/10 p-6">
+            <dl class="space-y-4 text-sm">
+              <div>
+                <dt class="text-[10px] uppercase tracking-[0.2em] text-soil/50">Dates</dt>
+                <dd class="mt-1 font-medium text-soil">{w.dates}</dd>
+              </div>
+              <div>
+                <dt class="text-[10px] uppercase tracking-[0.2em] text-soil/50">Schedule</dt>
+                <dd class="mt-1 font-medium text-soil">{w.schedule}</dd>
+              </div>
+              <div>
+                <dt class="text-[10px] uppercase tracking-[0.2em] text-soil/50">What we cover</dt>
+                <dd class="mt-2">
+                  <ul class="space-y-1.5">
+                    {w.topics.map((t) => (
+                      <li class="flex items-start gap-2"><span class="mt-2 size-1.5 rounded-full bg-moss-600 shrink-0"></span><span class="text-soil/80">{t}</span></li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="bg-soil-700 text-cream relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+      <img src={garden} alt="" class="w-full h-full object-cover" loading="lazy" />
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-soil-700 via-soil-700/90 to-soil-700/60"></div>
+    <div class="container-x py-20 relative grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-500 mb-3">Soil Lab Sundays</p>
+        <h2 class="text-4xl md:text-5xl text-cream">Drop in. Look through the scope. Take it from there.</h2>
+        <p class="mt-5 text-cream/85 max-w-prose leading-relaxed">
+          Sundays, 11 AM – 4 PM. Bring a soil sample and we'll look at it together — bacteria, fungi, protozoa, nematodes — and talk through what it means for what you're growing. $50 per Soil Health Check; scholarships available.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href={link('/events')} class="btn-gold">See Dates</a>
+        <a href={link('/services')} class="btn-outline-cream">All Services</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

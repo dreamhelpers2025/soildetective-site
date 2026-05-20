@@ -1,0 +1,316 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const img = {
+  heroHands: `${cdn}/1756246127155-FS8JWLXOR92CCNJA9C15/unsplash-image-4z3lnwEvZQw.jpg?format=2500w`,
+  microscope: `${cdn}/03ce3214-9cd9-44dc-bbb6-a9f13e2adf9b/Scope+n+Monitor.jpg?format=1000w`,
+  amoeba: `${cdn}/18134adc-1d95-4a9d-8040-760c25e2eddd/Sept+22+2025.Amoeba+n+cyst.jpg?format=1000w`,
+  compost: `${cdn}/6df1e447-ca22-4c78-aff8-1b0c9d881f62/20250731_104722.jpg?format=1500w`,
+  community: `${cdn}/86bfa547-2660-41e8-833c-349f61e6ef4e/Feeling+strong.jpg?format=1500w`,
+  garden: `${cdn}/145735a9-0f67-4282-97dd-957d7db71867/20230508_121328.jpg?format=1500w`,
+  roots: `${cdn}/1762364292639-RZSGO2RFTH8LGI6QLX1L/unsplash-image-VmpL-3rZfHQ.jpg?format=2500w`,
+  sophia: `${cdn}/50411418-9279-4e75-923e-35d8914c8e79/Sophia+8.31.25.m.jpg?format=1500w`,
+  xavier: `${cdn}/d3641eb1-72ac-4d59-b446-5798575c3ac0/25-07-18-Xaviers+Legs.00_01_01_26.Still001.jpg?format=1500w`,
+  hands: `${cdn}/5720fe20-8bd9-48de-9f3c-11b1998a4ea3/3_6.20.2025.jpg?format=1500w`,
+};
+
+const steps = [
+  {
+    n: '1',
+    title: 'Test your soil',
+    body: 'Bring in a sample and see the hidden life under the microscope. Get clear, biology-based guidance for healthier plants.',
+    cta: 'Schedule Soil Lab Sunday',
+    href: '/services',
+    image: img.microscope,
+    iconBg: 'bg-moss-700',
+    icon: 'microscope',
+  },
+  {
+    n: '2',
+    title: 'Feed your soil',
+    body: 'Shop small-batch living compost and compost extracts made from locally gathered materials.',
+    cta: 'Shop Compost',
+    href: '/compost',
+    image: img.hands,
+    iconBg: 'bg-plum-700',
+    icon: 'droplet',
+  },
+  {
+    n: '3',
+    title: 'Learn together',
+    body: 'Join hands-on workshops, soil labs, and neighborhood compost education for all experience levels.',
+    cta: 'View Events',
+    href: '/events',
+    image: img.community,
+    iconBg: 'bg-gold-500',
+    icon: 'people',
+  },
+];
+
+const benefits = [
+  { label: 'Stronger plants', icon: 'plant' },
+  { label: 'Better water retention', icon: 'water' },
+  { label: 'Less inputs more results', icon: 'heart' },
+  { label: 'Pest & disease resilience', icon: 'shield' },
+  { label: 'Better flavor & nutrition', icon: 'leaf' },
+  { label: 'Healthier soil. Healthier future.', icon: 'globe' },
+];
+
+const audience = [
+  { label: 'For gardeners', body: 'Diagnose weak beds, poor yields, compacted soil, or tired compost.' },
+  { label: 'For families', body: "Learn what healthy soil looks like and why it matters." },
+  { label: 'For neighborhoods', body: 'Host a composting or soil workshop near you.' },
+  { label: 'For growers', body: 'Understand your soil food web before buying more inputs.' },
+];
+
+const services = [
+  { name: 'Biological Soil Analysis', body: 'A full soil food web assessment with organism counts, reference ranges, and a consultation.', image: img.amoeba, href: '/services' },
+  { name: 'Soil Lab Sundays', body: 'A practical, accessible soil health check for people who want quick clarity.', image: img.microscope, href: '/services' },
+  { name: 'Living Compost', body: 'Small-batch compost and extracts crafted for local soil needs.', image: img.hands, href: '/compost' },
+  { name: 'Workshops & Education', body: 'Hands-on education in composting, soil biology, nutrient cycling, and regenerative growing.', image: img.community, href: '/learn' },
+];
+---
+<BaseLayout>
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="container-x pt-12 pb-20 md:pt-16 md:pb-24 grid lg:grid-cols-[1.05fr_1.2fr] gap-10 items-center">
+      <div class="relative z-10">
+        <h1 class="text-[3.4rem] md:text-7xl lg:text-[5.5rem] leading-[0.95]">
+          <span class="italic font-medium">Your soil</span>
+          <br />
+          <span class="italic font-medium">is</span>
+          <span class="text-moss-600 italic font-medium">alive.</span>
+        </h1>
+        <p class="mt-6 eyebrow">Let's find out what it needs.</p>
+        <p class="mt-5 text-soil/75 max-w-md leading-relaxed">
+          Soil Detective helps our community understand soil biology, build better compost, grow healthier food, and strengthen the local ecosystem from the ground up.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={link('/contact')} class="btn-light">Book a Soil Check</a>
+          <a href={link('/learn')} class="btn-outline-soil">Explore Workshops</a>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="relative rounded-[28px] overflow-hidden aspect-[5/4] bg-soil-700 shadow-[0_30px_60px_-20px_rgba(43,30,23,0.4)]">
+          <img src={img.heroHands} alt="Hands holding a mound of dark, living soil" class="w-full h-full object-cover" loading="eager" />
+        </div>
+        <!-- Microscope overlay circle -->
+        <div class="hidden md:block absolute -right-6 top-12 w-56 h-56 rounded-full overflow-hidden border-[6px] border-cream shadow-xl bg-soil-700">
+          <img src={img.amoeba} alt="Microscope view of soil microorganisms" class="w-full h-full object-cover" />
+        </div>
+        <!-- Handwritten note -->
+        <div class="hidden md:block absolute right-2 bottom-6 max-w-[180px] text-right">
+          <p class="hand text-xl leading-snug">The life you can't see matters most.</p>
+          <svg class="ml-auto mt-1" width="60" height="30" viewBox="0 0 60 30" fill="none" aria-hidden="true">
+            <path d="M2 4 C 18 18, 35 22, 56 26" stroke="#2B1E17" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <path d="M50 22 L 56 26 L 50 30" stroke="#2B1E17" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+          </svg>
+        </div>
+        <!-- Botanical sketch decoration -->
+        <svg class="absolute -right-4 -top-6 w-32 h-32 text-plum-600/30 hidden md:block" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <path d="M50 90 Q 50 60 50 30 M50 75 Q 30 70 25 55 M50 75 Q 70 70 75 55 M50 55 Q 32 50 28 35 M50 55 Q 68 50 72 35 M50 35 Q 38 30 35 18 M50 35 Q 62 30 65 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE STEPS -->
+  <section class="bg-cream-dark/40 border-y border-soil/5">
+    <div class="container-x py-16 md:py-20 grid md:grid-cols-3 gap-8">
+      {steps.map((s) => (
+        <div class="flex flex-col">
+          <div class="grid grid-cols-[auto_1fr] gap-4 items-start">
+            <div class={`size-12 rounded-full ${s.iconBg} text-cream flex items-center justify-center`}>
+              {s.icon === 'microscope' && (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 20h12M9 20v-3M15 20v-3M9 17h6"/>
+                  <rect x="10" y="3" width="4" height="9" rx="1.5"/>
+                  <path d="M12 12v3M7 14a5 5 0 0 0 10 0"/>
+                </svg>
+              )}
+              {s.icon === 'droplet' && (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 C 8 9, 5 13, 5 16 a 7 7 0 0 0 14 0 c 0 -3 -3 -7 -7 -13z"/>
+                </svg>
+              )}
+              {s.icon === 'people' && (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/>
+                  <path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 19c0-2 2-4 5-4s5 2 5 4" />
+                </svg>
+              )}
+            </div>
+            <div>
+              <p class="font-display text-xl text-soil"><span class="text-soil/40 mr-1">{s.n}.</span>{s.title.toUpperCase()}</p>
+            </div>
+          </div>
+          <div class="mt-5 rounded-lg overflow-hidden aspect-[16/10] bg-soil/10">
+            <img src={s.image} alt={s.title} class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <p class="mt-5 text-soil/75 leading-relaxed">{s.body}</p>
+          <a href={link(s.href)} class="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-clay-500 hover:text-clay-700">{s.cta} →</a>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- DARK FOOD WEB BAND -->
+  <section class="bg-soil-700 text-cream relative overflow-hidden">
+    <div class="absolute inset-0 opacity-30">
+      <img src={img.roots} alt="" class="w-full h-full object-cover" loading="lazy" />
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-soil-700 via-soil-700/85 to-soil-700/40"></div>
+    <div class="container-x py-20 md:py-28 relative">
+      <div class="max-w-2xl">
+        <h2 class="text-4xl md:text-5xl text-cream leading-tight">
+          Dirt grows tired.<br/>
+          <span class="text-moss-300 italic">Living soil grows life.</span>
+        </h2>
+        <p class="mt-6 text-cream/80 max-w-lg leading-relaxed">
+          Healthy soil is built by a community of organisms that cycle nutrients, improve structure, hold water, and support stronger plants.
+        </p>
+      </div>
+
+      <div class="mt-14 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-8 gap-x-4">
+        {benefits.map((b) => (
+          <div class="flex flex-col items-start gap-3">
+            <div class="size-10 rounded-full bg-cream/10 border border-cream/20 flex items-center justify-center text-moss-300">
+              {b.icon === 'plant' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10M12 10c-2-3-5-3-7-2 0 3 3 6 7 6zM12 10c2-3 5-3 7-2 0 3-3 6-7 6z"/></svg>}
+              {b.icon === 'water' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4 6-7 10-7 13a7 7 0 0 0 14 0c0-3-3-7-7-13z"/></svg>}
+              {b.icon === 'heart' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>}
+              {b.icon === 'shield' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6l8-3z"/></svg>}
+              {b.icon === 'leaf' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 7-16 16-16-1 9-7 16-16 16zM4 20l8-8"/></svg>}
+              {b.icon === 'globe' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18"/></svg>}
+            </div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-cream/90 leading-snug">{b.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="absolute right-6 bottom-10 max-w-[200px] text-right hidden lg:block">
+        <p class="hand text-cream text-xl leading-snug">A thriving soil food web supports everything above ground.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY LAB -->
+  <section class="bg-cream">
+    <div class="container-x py-20 md:py-24 grid lg:grid-cols-[1fr_1.2fr] gap-12 items-center">
+      <div>
+        <p class="eyebrow-moss mb-4">The Soil Detective</p>
+        <h2 class="text-5xl md:text-6xl">Community Lab</h2>
+        <p class="mt-5 text-soil/80 leading-relaxed">
+          Bring a sample. Ask questions. Meet your neighbors. Leave with a plan.
+        </p>
+        <p class="mt-3 text-soil/70 leading-relaxed">
+          Every Sunday from <strong>11 AM – 4 PM</strong> we host <strong>Soil Lab Sundays</strong> — drop in for microscope-based soil health checks, practical recommendations, and pay-it-forward support for scholarships.
+        </p>
+        <div class="mt-8 grid sm:grid-cols-2 gap-5">
+          {audience.map((a) => (
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-moss-700">{a.label}</p>
+              <p class="mt-1 text-sm text-soil/75 leading-relaxed">{a.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="mt-8">
+          <a href={link('/contact')} class="btn-moss">Bring Your Soil Sample</a>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden aspect-[5/4] bg-soil/10 shadow-[0_30px_60px_-20px_rgba(43,30,23,0.3)]">
+          <img src={img.garden} alt="Community soil lab gathering" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <!-- Chalkboard sign -->
+        <div class="hidden md:flex absolute -right-4 -bottom-8 w-44 h-44 rotate-[8deg] bg-soil-900 text-cream rounded-lg border-[6px] border-gold-600 shadow-xl flex-col items-center justify-center text-center px-3">
+          <p class="hand text-gold-500 text-2xl leading-tight">Soil Lab</p>
+          <p class="hand text-gold-500 text-2xl leading-tight">Sundays</p>
+          <p class="mt-1 text-cream text-sm font-semibold tracking-wider">11AM – 4PM</p>
+          <p class="hand text-gold-500 text-lg leading-tight mt-1">All are welcome!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION + SERVICES SPLIT -->
+  <section class="bg-cream-dark/30 border-t border-soil/5">
+    <div class="container-x py-20 md:py-24 grid lg:grid-cols-[1fr_1.5fr] gap-10">
+      <!-- Mission -->
+      <div class="rounded-2xl bg-moss-800 text-cream p-10">
+        <h2 class="text-2xl md:text-3xl text-cream leading-snug uppercase tracking-wide font-display font-medium">
+          Waste can become soil.<br/>
+          Soil can become food.<br/>
+          Food can become community.
+        </h2>
+        <p class="mt-6 text-cream/80 leading-relaxed text-sm">
+          Soil Detective exists to help build a regenerative local system: turning waste into living compost, living compost into healthy soil, and healthy soil into stronger local food systems.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.2em]">
+          <span class="text-gold-500">Multicultural</span>
+          <span class="text-cream/40">·</span>
+          <span class="text-gold-500">Woman-owned</span>
+          <span class="text-cream/40">·</span>
+          <span class="text-gold-500">LGBTQ+ owned</span>
+          <span class="text-cream/40">·</span>
+          <span class="text-gold-500">Community-centered</span>
+        </div>
+        <a href={link('/contact')} class="btn-gold mt-8">Support the Mission</a>
+      </div>
+
+      <!-- Services grid -->
+      <div>
+        <p class="eyebrow mb-4">Our Services</p>
+        <div class="grid sm:grid-cols-2 gap-5">
+          {services.map((s) => (
+            <a href={link(s.href)} class="group rounded-xl bg-cream border border-soil/10 overflow-hidden hover:border-soil/30 transition flex flex-col">
+              <div class="aspect-[16/10] bg-soil-700 overflow-hidden">
+                <img src={s.image} alt={s.name} class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+              </div>
+              <div class="p-5 flex flex-col flex-1">
+                <h3 class="font-display text-lg uppercase tracking-wide text-soil leading-snug">{s.name}</h3>
+                <p class="mt-2 text-sm text-soil/70 leading-relaxed flex-1">{s.body}</p>
+                <span class="mt-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-clay-500 group-hover:text-clay-700">Learn more →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- START WHERE YOU ARE -->
+  <section class="bg-cream border-t border-soil/10">
+    <div class="container-x py-16 grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
+      <div>
+        <h2 class="text-4xl md:text-5xl leading-tight">Start where<br/>you are.</h2>
+        <p class="mt-5 text-soil/75 leading-relaxed text-sm max-w-md">
+          You don't need to be an expert. Bring a handful of soil, a compost question, a struggling plant, or simple curiosity. We'll help you see what's happening underground and what to do next.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <a href={link('/contact')} class="rounded-xl bg-cream-dark/40 border border-soil/10 p-5 flex flex-col items-start gap-3 hover:border-soil/30 transition">
+          <div class="size-9 rounded-full bg-moss-700 text-cream flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3c-4 6-7 10-7 13a7 7 0 0 0 14 0c0-3-3-7-7-13z"/></svg>
+          </div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-soil">Book a Soil Check</p>
+        </a>
+        <a href={link('/learn')} class="rounded-xl bg-cream-dark/40 border border-soil/10 p-5 flex flex-col items-start gap-3 hover:border-soil/30 transition">
+          <div class="size-9 rounded-full bg-plum-700 text-cream flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5"/></svg>
+          </div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-soil">Join a Workshop</p>
+        </a>
+        <form class="rounded-xl bg-moss-700 p-5 flex flex-col gap-3" action="mailto:soildetective@gmail.com" method="post" enctype="text/plain">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-cream">Sign up for updates</p>
+          <div class="flex gap-2">
+            <input required type="email" name="email" placeholder="Your email address" class="flex-1 rounded-md bg-cream/15 border border-cream/30 px-3 py-2 text-sm text-cream placeholder-cream/60 focus:outline-none focus:border-gold-500" />
+            <button class="rounded-md bg-soil-700 text-cream px-4 text-[11px] font-semibold uppercase tracking-[0.15em] hover:bg-soil-900">Sign up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

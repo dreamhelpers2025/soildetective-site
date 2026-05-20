@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+const { pathname } = Astro.url;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const nav = [
+  { href: '/', label: 'Start Here' },
+  { href: '/services', label: 'Soil Testing' },
+  { href: '/compost', label: 'Compost' },
+  { href: '/learn', label: 'Workshops' },
+  { href: '/community', label: 'Community' },
+  { href: '/events', label: 'Events' },
+  { href: '/memberships', label: 'Memberships' },
+  { href: '/support', label: 'Support' },
+];
+
+const isActive = (href: string) => {
+  if (href === '/') return pathname === base + '/' || pathname === base || pathname === '/';
+  return pathname.startsWith(base + href);
+};
+---
+<header class="sticky top-0 z-30 backdrop-blur bg-cream/85 border-b border-soil/10">
+  <div class="container-x flex items-center justify-between h-20 gap-6">
+    <a href={link('/')} class="shrink-0">
+      <Logo size="md" />
+    </a>
+    <nav class="hidden lg:flex items-center gap-7">
+      {nav.map(({ href, label }) => (
+        <a
+          href={link(href)}
+          class:list={['nav-link', isActive(href) && 'nav-link-active']}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+    <a href={link('/contact')} class="btn-primary !px-5 !py-2.5 text-[11px] hidden sm:inline-flex">Book a Soil Check</a>
+    <button id="navToggle" class="lg:hidden p-2 -mr-2 text-soil" aria-label="Open menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="4" y1="7" x2="20" y2="7"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
+    </button>
+  </div>
+  <div id="mobileNav" class="lg:hidden hidden border-t border-soil/10 bg-cream">
+    <nav class="container-x py-5 flex flex-col gap-3">
+      {nav.map(({ href, label }) => (
+        <a href={link(href)} class="nav-link py-1">{label}</a>
+      ))}
+      <a href={link('/contact')} class="btn-primary mt-3 self-start !px-5 !py-2.5 text-[11px]">Book a Soil Check</a>
+    </nav>
+  </div>
+</header>
+<script>
+  const t = document.getElementById('navToggle');
+  const m = document.getElementById('mobileNav');
+  t?.addEventListener('click', () => m?.classList.toggle('hidden'));
+</script>

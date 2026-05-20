@@ -1,0 +1,53 @@
+---
+import Logo from './Logo.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+const year = new Date().getFullYear();
+---
+<footer class="bg-soil-700 text-cream/85 mt-0">
+  <div class="container-x py-16 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+    <div class="space-y-5">
+      <Logo variant="cream" size="md" />
+      <p class="text-cream/70 text-sm max-w-sm leading-relaxed">
+        A multicultural, woman-owned, LGBTQ+ small business in Olympia, WA — building a regenerative local system that turns waste into soil, soil into food, and food into community.
+      </p>
+      <div class="flex gap-3">
+        <span class="text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 border border-cream/30 rounded-full">Multicultural</span>
+        <span class="text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 border border-cream/30 rounded-full">Woman-owned</span>
+      </div>
+    </div>
+    <div>
+      <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-500 mb-4">Explore</div>
+      <ul class="space-y-2.5 text-sm">
+        <li><a href={link('/')} class="hover:text-gold-500">Start Here</a></li>
+        <li><a href={link('/services')} class="hover:text-gold-500">Soil Testing</a></li>
+        <li><a href={link('/compost')} class="hover:text-gold-500">Compost</a></li>
+        <li><a href={link('/learn')} class="hover:text-gold-500">Workshops</a></li>
+        <li><a href={link('/events')} class="hover:text-gold-500">Events</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-500 mb-4">Contact</div>
+      <ul class="space-y-2.5 text-sm">
+        <li><a href="mailto:soildetective@gmail.com" class="hover:text-gold-500">soildetective@gmail.com</a></li>
+        <li><a href="tel:+13602593637" class="hover:text-gold-500">(360) 259-3637</a></li>
+        <li>Olympia, WA</li>
+        <li><a href={link('/contact')} class="hover:text-gold-500">Book a Soil Check →</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-500 mb-4">Stay in the loop</div>
+      <p class="text-sm text-cream/70 mb-4">Soil insights, upcoming events, workshop dates. Sent occasionally.</p>
+      <form class="flex gap-2" action="mailto:soildetective@gmail.com" method="post" enctype="text/plain">
+        <input required type="email" name="newsletter_email" placeholder="your email" class="flex-1 rounded-md bg-cream/10 border border-cream/20 px-3 py-2 text-sm text-cream placeholder-cream/50 focus:outline-none focus:border-gold-500" />
+        <button class="btn-moss !px-4 !py-2 text-[11px]">Sign up</button>
+      </form>
+    </div>
+  </div>
+  <div class="border-t border-cream/10">
+    <div class="container-x py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-cream/50">
+      <span>© {year} Soil Detective LLC. All rights reserved.</span>
+      <span>Healthy soil. Healthy community.</span>
+    </div>
+  </div>
+</footer>

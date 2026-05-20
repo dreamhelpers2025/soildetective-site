@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const roots = `${cdn}/1762364292639-RZSGO2RFTH8LGI6QLX1L/unsplash-image-VmpL-3rZfHQ.jpg?format=2500w`;
+const amoeba = `${cdn}/18134adc-1d95-4a9d-8040-760c25e2eddd/Sept+22+2025.Amoeba+n+cyst.jpg?format=1500w`;
+
+const steps = [
+  { n: '01', t: 'Dirt vs. soil', b: 'Most soils lack the nutrients or structure needed for healthy plants. The nutrients are already there in the dirt — turning dirt into soil requires life.' },
+  { n: '02', t: 'Life requires food', b: 'Plants pump sugars made by photosynthesis into the soil. Those exudates feed microbes that in turn feed the plant — a constant exchange.' },
+  { n: '03', t: 'Bacteria mine the minerals', b: 'Bacteria break down rock, silt, sand, and clay with alkaline enzymes to access the nutrients they need.' },
+  { n: '04', t: 'Fungi crack the carbon', b: 'Fungi use acidic enzymes to break down organic matter — the same enzymatic work our saliva does on a foggy pair of glasses.' },
+  { n: '05', t: 'Waste becomes glue', b: 'Microbes consume more than they need and poop out the rest. That waste binds soil aggregates together.' },
+  { n: '06', t: 'Aggregates become structure', b: 'Bacteria build the bricks. Fungi, as they move through the soil, connect those aggregates into structure that holds water and oxygen.' },
+  { n: '07', t: 'Predators arrive', b: 'As bacterial and fungal populations grow, higher organisms — protozoa, amoebae, nematodes, actinobacteria — come to feed.' },
+  { n: '08', t: 'Nutrient cycling', b: 'Predators release the nutrients they consume in plant-available forms. Microorganisms building soil cities right around the roots.' },
+  { n: '09', t: 'And tillage?', b: 'Tillage has the effect of Godzilla making its way through a major city. The structure collapses; the cities have to be rebuilt.' },
+];
+---
+<BaseLayout title="Soil 101 — Soil Detective" description="A friendly walk through the soil food web — dirt vs. soil, how microbes build structure, and why tillage matters.">
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img src={roots} alt="" class="w-full h-full object-cover opacity-25" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-b from-cream via-cream/85 to-cream"></div>
+    </div>
+    <div class="container-x pt-20 pb-12 relative">
+      <p class="eyebrow mb-4">Soil 101</p>
+      <h1 class="text-5xl md:text-6xl max-w-4xl leading-[1.05]">
+        Why do most soils lack what plants need —<br/>
+        <span class="italic text-moss-700">and what can we do about it?</span>
+      </h1>
+      <p class="mt-6 text-soil/75 max-w-prose">
+        The nutrients plants need are already in the dirt. The trick: turning dirt into soil requires life — and life requires food.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-x py-16">
+    <ol class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {steps.map((s) => (
+        <li class="rounded-xl bg-cream-dark/30 border border-soil/10 p-7 hover:border-soil/30 transition">
+          <div class="font-display text-clay-500 text-3xl">{s.n}</div>
+          <h3 class="mt-3 text-xl uppercase tracking-wide">{s.t}</h3>
+          <p class="mt-3 text-soil/75 leading-relaxed text-sm">{s.b}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bg-soil-700 text-cream">
+    <div class="container-x py-20 grid md:grid-cols-[1.2fr_1fr] gap-12 items-center">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-500 mb-4">It's all connected</p>
+        <h2 class="text-4xl md:text-5xl text-cream">From microbes to mental clarity.</h2>
+        <p class="mt-5 text-cream/80 leading-relaxed max-w-prose">
+          Supporting a diverse soil food web ensures nutrient cycling, feeds and protects plants, and increases production, flavor, and nutrient density. That feeds our guts, fuels mental clarity, eases inflammation, and softens the effects of compound stress and trauma.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={link('/services')} class="btn-gold">See Soil Testing</a>
+          <a href={link('/contact')} class="btn-outline-cream">Book a Soil Check</a>
+        </div>
+      </div>
+      <div class="rounded-2xl overflow-hidden aspect-square bg-soil-900">
+        <img src={amoeba} alt="Microscope view of soil microorganisms" class="w-full h-full object-cover" loading="lazy" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

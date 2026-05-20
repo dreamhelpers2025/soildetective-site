@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream text-ink antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-soil;
+  }
+  h1 {
+    @apply leading-[1.02];
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto max-w-7xl px-6 lg:px-10;
+  }
+  .container-tight {
+    @apply mx-auto max-w-6xl px-6 lg:px-10;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-6 py-3 font-medium tracking-wide uppercase text-[13px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-moss-500;
+  }
+  .btn-primary {
+    @apply btn bg-plum-700 text-cream hover:bg-plum-800;
+  }
+  .btn-moss {
+    @apply btn bg-moss-700 text-cream hover:bg-moss-800;
+  }
+  .btn-gold {
+    @apply btn bg-gold-500 text-soil hover:bg-gold-600;
+  }
+  .btn-outline-cream {
+    @apply btn border border-cream/80 text-cream hover:bg-cream/10;
+  }
+  .btn-outline-soil {
+    @apply btn border border-soil/30 text-soil hover:border-soil/60;
+  }
+  .btn-light {
+    @apply btn bg-cream text-soil hover:bg-white;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-clay;
+  }
+  .eyebrow-moss {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-moss-700;
+  }
+  .nav-link {
+    @apply text-[12px] font-semibold uppercase tracking-[0.18em] text-soil/80 hover:text-soil transition;
+  }
+  .nav-link-active {
+    @apply text-soil;
+  }
+  .card {
+    @apply rounded-lg bg-cream/70 border border-soil/10 p-6;
+  }
+  .hand {
+    @apply font-hand text-soil/80;
+  }
+  .torn-edge {
+    -webkit-mask-image: radial-gradient(ellipse at center, black 70%, transparent 100%);
+            mask-image: radial-gradient(ellipse at center, black 70%, transparent 100%);
+  }
+}

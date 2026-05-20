@@ -1,0 +1,322 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { MATERIALS, TARGET_CN_LOW, TARGET_CN_HIGH, TARGET_CN_IDEAL, TARGET_VOLUME_GAL } from '../../data/materials';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+---
+<BaseLayout title="Recipe Builder — Soil Detective" description="Build a hot composting recipe with the correct C:N ratio for a 250-gallon pile.">
+  <section class="container-x pt-16 pb-8">
+    <p class="eyebrow mb-4">Community · Recipe Builder</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Build a balanced pile <span class="italic text-moss-700">in minutes.</span>
+    </h1>
+    <p class="mt-5 text-soil/75 max-w-prose leading-relaxed">
+      Add what you have on hand. The math runs as you type. Aim for a carbon-to-nitrogen ratio between <strong>25:1 and 35:1</strong> — that's the sweet spot for a hot pile that climbs fast and doesn't stink.
+    </p>
+  </section>
+
+  <section class="container-x pb-20 grid lg:grid-cols-[1.5fr_1fr] gap-8 items-start">
+    <!-- LEFT: Builder -->
+    <div class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-6 md:p-8">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-xl uppercase tracking-wide">Your ingredients</h2>
+          <p class="text-soil/60 text-sm mt-1">Enter gallons of each material. (Standard pile target: ~{TARGET_VOLUME_GAL} gallons)</p>
+        </div>
+        <div class="flex gap-2">
+          <button id="addRow" class="btn-outline-soil !px-4 !py-2 text-[11px]">+ Add ingredient</button>
+          <button id="resetAll" class="text-[11px] uppercase tracking-[0.18em] text-soil/50 hover:text-clay-500">Reset</button>
+        </div>
+      </div>
+
+      <div class="mt-6 hidden md:grid grid-cols-[1fr_110px_90px_70px_auto] gap-3 text-[10px] uppercase tracking-[0.18em] text-soil/50 px-1">
+        <span>Material</span>
+        <span class="text-right">Volume (gal)</span>
+        <span class="text-right">≈ Weight</span>
+        <span class="text-right">C:N</span>
+        <span></span>
+      </div>
+
+      <div id="rows" class="mt-3 space-y-3"></div>
+
+      <p id="emptyMsg" class="hidden text-soil/50 text-sm italic py-6 text-center">No ingredients yet — add one to start.</p>
+    </div>
+
+    <!-- RIGHT: Live readout -->
+    <aside class="rounded-2xl bg-soil-700 text-cream p-6 md:p-8 sticky top-24 space-y-6">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500">Your blend</p>
+        <p class="mt-2"><span id="cnValue" class="font-display text-6xl text-cream">—</span><span class="text-cream/60 text-2xl">:1</span></p>
+        <p id="cnLabel" class="mt-1 text-sm text-cream/70">Add ingredients to see your ratio.</p>
+      </div>
+
+      <!-- Gauge -->
+      <div>
+        <div class="relative h-3 rounded-full bg-cream/15 overflow-hidden">
+          <div class="absolute inset-y-0 bg-moss-500/40" style="left: 30%; right: 30%;"></div>
+          <div id="gaugeNeedle" class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-4 rounded-full border-2 border-cream bg-gold-500 transition-all duration-300" style="left: 50%;"></div>
+        </div>
+        <div class="mt-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-cream/50">
+          <span>10 (N-heavy)</span>
+          <span>30 (ideal)</span>
+          <span>80 (C-heavy)</span>
+        </div>
+      </div>
+
+      <dl class="grid grid-cols-2 gap-3 text-sm">
+        <div class="rounded-lg bg-cream/5 p-3">
+          <dt class="text-[10px] uppercase tracking-[0.18em] text-cream/50">Total volume</dt>
+          <dd class="mt-1 text-cream"><span id="totalVolume">0</span> gal</dd>
+        </div>
+        <div class="rounded-lg bg-cream/5 p-3">
+          <dt class="text-[10px] uppercase tracking-[0.18em] text-cream/50">≈ Total weight</dt>
+          <dd class="mt-1 text-cream"><span id="totalWeight">0</span> lbs</dd>
+        </div>
+        <div class="rounded-lg bg-cream/5 p-3">
+          <dt class="text-[10px] uppercase tracking-[0.18em] text-cream/50">Greens (vol)</dt>
+          <dd class="mt-1 text-cream"><span id="pctGreen">0</span>%</dd>
+        </div>
+        <div class="rounded-lg bg-cream/5 p-3">
+          <dt class="text-[10px] uppercase tracking-[0.18em] text-cream/50">Browns (vol)</dt>
+          <dd class="mt-1 text-cream"><span id="pctBrown">0</span>%</dd>
+        </div>
+      </dl>
+
+      <div id="advice" class="rounded-lg bg-cream/10 p-4 text-sm text-cream/85 leading-relaxed"></div>
+
+      <div class="flex flex-col gap-2">
+        <a id="sendToTracker" href={link('/community/pile-tracker')} class="btn-gold w-full text-center">Start Tracking This Pile</a>
+        <button id="exportRecipe" class="btn-outline-cream w-full">Download Recipe (CSV)</button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="container-x pb-24">
+    <div class="rounded-2xl bg-cream-dark/30 border border-soil/10 p-8 grid md:grid-cols-3 gap-6 text-sm">
+      <div>
+        <p class="eyebrow-moss mb-2">Why 25–35:1</p>
+        <p class="text-soil/75">Microbes need carbon for energy and nitrogen for protein. Too much N and the pile goes anaerobic and reeks of ammonia. Too much C and it sits cold.</p>
+      </div>
+      <div>
+        <p class="eyebrow-moss mb-2">Greens vs. browns</p>
+        <p class="text-soil/75">Greens are wet and N-rich (kitchen scraps, fresh manure, grass). Browns are dry and C-rich (straw, leaves, cardboard). By volume, most piles are 2–3 parts browns to 1 part greens — but the math runs on weight, since C:N is a mass ratio.</p>
+      </div>
+      <div>
+        <p class="eyebrow-moss mb-2">Moisture matters too</p>
+        <p class="text-soil/75">Aim for the feel of a wrung-out sponge — about 50–60% water. The builder flags wet/dry imbalance based on what you add.</p>
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ MATERIALS, TARGET_CN_LOW, TARGET_CN_HIGH, TARGET_CN_IDEAL, TARGET_VOLUME_GAL }}>
+    const rowsEl = document.getElementById('rows');
+    const emptyEl = document.getElementById('emptyMsg');
+    const cnValueEl = document.getElementById('cnValue');
+    const cnLabelEl = document.getElementById('cnLabel');
+    const gaugeNeedle = document.getElementById('gaugeNeedle');
+    const totalWeightEl = document.getElementById('totalWeight');
+    const totalVolumeEl = document.getElementById('totalVolume');
+    const pctGreenEl = document.getElementById('pctGreen');
+    const pctBrownEl = document.getElementById('pctBrown');
+    const adviceEl = document.getElementById('advice');
+
+    let rows = [];
+
+    function makeRow(name = MATERIALS[0].name, volume = 0) {
+      return { id: crypto.randomUUID(), name, volume };
+    }
+
+    function render() {
+      rowsEl.innerHTML = '';
+      if (rows.length === 0) emptyEl.classList.remove('hidden');
+      else emptyEl.classList.add('hidden');
+
+      rows.forEach((row) => {
+        const mat = MATERIALS.find((m) => m.name === row.name) || MATERIALS[0];
+        const wrap = document.createElement('div');
+        wrap.className = 'grid grid-cols-[1fr_110px_90px_70px_auto] gap-3 items-center';
+        const estLbs = (Number(row.volume) || 0) * mat.density;
+        wrap.innerHTML = `
+          <select data-id="${row.id}" data-field="name" class="w-full rounded-md border border-soil/20 bg-cream px-3 py-2 text-sm text-soil focus:outline-none focus:border-moss-600">
+            ${['green', 'balanced', 'brown'].map((cat) => {
+              const opts = MATERIALS.filter((m) => m.category === cat)
+                .map((m) => `<option value="${m.name}" ${m.name === row.name ? 'selected' : ''}>${m.name}</option>`)
+                .join('');
+              const labels = { green: 'Greens (high N)', balanced: 'Balanced', brown: 'Browns (high C)' };
+              return `<optgroup label="${labels[cat]}">${opts}</optgroup>`;
+            }).join('')}
+          </select>
+          <input data-id="${row.id}" data-field="volume" type="number" min="0" step="0.5" value="${row.volume}" class="w-full rounded-md border border-soil/20 bg-cream px-3 py-2 text-sm text-soil text-right focus:outline-none focus:border-moss-600" />
+          <span class="text-right text-xs text-soil/55">${estLbs ? '≈ ' + estLbs.toFixed(0) + ' lbs' : '—'}</span>
+          <span class="text-right text-sm text-soil/60">${mat.cn}:1</span>
+          <button data-id="${row.id}" data-field="remove" class="text-soil/40 hover:text-clay-500 px-2" aria-label="Remove">✕</button>
+        `;
+        rowsEl.appendChild(wrap);
+      });
+      compute();
+    }
+
+    function compute() {
+      let totalC = 0, totalN = 0, totalW = 0, totalVol = 0;
+      let greenV = 0, brownV = 0, balancedV = 0;
+      let wetW = 0, dryW = 0;
+
+      for (const r of rows) {
+        const mat = MATERIALS.find((m) => m.name === r.name);
+        if (!mat) continue;
+        const gal = Number(r.volume) || 0;
+        if (gal <= 0) continue;
+        // Convert volume → weight (lbs) so C:N math (which is a mass ratio) is correct
+        const w = gal * mat.density;
+        // For C:N = R, N share = 1/(R+1), C share = R/(R+1)
+        const n = w / (mat.cn + 1);
+        const c = w - n;
+        totalC += c;
+        totalN += n;
+        totalW += w;
+        totalVol += gal;
+        if (mat.category === 'green') greenV += gal;
+        else if (mat.category === 'brown') brownV += gal;
+        else balancedV += gal;
+        if (mat.moisture === 'wet') wetW += w;
+        if (mat.moisture === 'dry') dryW += w;
+      }
+
+      const ratio = totalN > 0 ? totalC / totalN : null;
+      cnValueEl.textContent = ratio ? ratio.toFixed(1) : '—';
+      totalWeightEl.textContent = totalW.toFixed(0);
+      totalVolumeEl.textContent = totalVol.toFixed(0);
+      const denom = greenV + brownV + balancedV || 1;
+      pctGreenEl.textContent = Math.round((greenV / denom) * 100);
+      pctBrownEl.textContent = Math.round((brownV / denom) * 100);
+
+      // Gauge: map 10 → 0%, 30 → 50%, 80 → 100%
+      if (ratio) {
+        let pct;
+        if (ratio <= 30) pct = ((ratio - 10) / 20) * 50;
+        else pct = 50 + ((ratio - 30) / 50) * 50;
+        pct = Math.max(2, Math.min(98, pct));
+        gaugeNeedle.style.left = pct + '%';
+      } else {
+        gaugeNeedle.style.left = '50%';
+      }
+
+      // Label + advice
+      if (!ratio) {
+        cnLabelEl.textContent = 'Add ingredients to see your ratio.';
+        adviceEl.textContent = 'Tip: most piles end up roughly 2–3 parts browns to 1 part greens by volume, depending on what you have.';
+        return;
+      }
+      let label, tips = [];
+      if (ratio < TARGET_CN_LOW) {
+        label = `${(TARGET_CN_LOW - ratio).toFixed(1)} too N-heavy`;
+        tips.push('Add more browns (straw, dry leaves, shredded cardboard) to lift the ratio toward 30:1.');
+      } else if (ratio > TARGET_CN_HIGH) {
+        label = `${(ratio - TARGET_CN_HIGH).toFixed(1)} too C-heavy`;
+        tips.push('Add more greens (kitchen scraps, fresh manure, grass clippings) to bring the ratio down toward 30:1.');
+      } else {
+        label = ratio < TARGET_CN_IDEAL + 1 && ratio > TARGET_CN_IDEAL - 1 ? 'Dialed in — ready to build.' : 'In the hot-pile sweet spot.';
+      }
+      cnLabelEl.textContent = label;
+
+      if (totalVol < TARGET_VOLUME_GAL * 0.7) tips.push(`Pile estimate: ${totalVol.toFixed(0)} gal — under the ${TARGET_VOLUME_GAL}-gal thermal mass minimum. Scale ingredients up by ~${Math.ceil((TARGET_VOLUME_GAL / Math.max(totalVol, 1)) * 10) / 10}×.`);
+      if (totalVol > TARGET_VOLUME_GAL * 1.4) tips.push(`Pile estimate: ${totalVol.toFixed(0)} gal — over ${TARGET_VOLUME_GAL} gal. Consider building two piles.`);
+      if (wetW > 0 && dryW === 0) tips.push('All wet inputs — add dry browns or your pile will go anaerobic.');
+      if (dryW > 0 && wetW === 0) tips.push('All dry inputs — wet down each layer as you build, or add wet greens.');
+      adviceEl.textContent = tips.length ? tips.join(' ') : 'Layer in 4-inch bands as you build, watering each layer.';
+    }
+
+    rowsEl.addEventListener('change', (e) => {
+      const t = e.target;
+      const id = t.dataset.id;
+      const field = t.dataset.field;
+      if (!id || !field) return;
+      const r = rows.find((x) => x.id === id);
+      if (!r) return;
+      if (field === 'name') { r.name = t.value; render(); return; }
+      if (field === 'volume') r.volume = Number(t.value) || 0;
+      compute();
+    });
+    rowsEl.addEventListener('input', (e) => {
+      const t = e.target;
+      if (t.dataset.field !== 'volume') return;
+      const r = rows.find((x) => x.id === t.dataset.id);
+      if (r) {
+        r.volume = Number(t.value) || 0;
+        // Update derived weight in this row
+        const mat = MATERIALS.find((m) => m.name === r.name);
+        if (mat) {
+          const sibling = t.parentElement?.querySelectorAll('span')[0];
+          const est = r.volume * mat.density;
+          if (sibling) sibling.textContent = est ? '≈ ' + est.toFixed(0) + ' lbs' : '—';
+        }
+        compute();
+      }
+    });
+    rowsEl.addEventListener('click', (e) => {
+      const t = e.target;
+      if (t.dataset?.field !== 'remove') return;
+      rows = rows.filter((r) => r.id !== t.dataset.id);
+      render();
+    });
+
+    document.getElementById('addRow').addEventListener('click', () => {
+      rows.push(makeRow(MATERIALS[0].name, 0));
+      render();
+    });
+    document.getElementById('resetAll').addEventListener('click', () => {
+      if (rows.length && !confirm('Clear all ingredients?')) return;
+      rows = [];
+      render();
+    });
+
+    document.getElementById('exportRecipe').addEventListener('click', () => {
+      if (rows.length === 0) { alert('Add at least one ingredient first.'); return; }
+      const lines = ['Material,Volume (gal),≈ Weight (lbs),C:N'];
+      for (const r of rows) {
+        const m = MATERIALS.find((x) => x.name === r.name);
+        if (m && r.volume) {
+          const w = (r.volume * m.density).toFixed(0);
+          lines.push(`"${r.name}",${r.volume},${w},${m.cn}`);
+        }
+      }
+      lines.push('');
+      lines.push(`Computed C:N,${cnValueEl.textContent}`);
+      lines.push(`Total volume (gal),${totalVolumeEl.textContent}`);
+      lines.push(`Estimated total weight (lbs),${totalWeightEl.textContent}`);
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `soil-detective-recipe-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    });
+
+    document.getElementById('sendToTracker').addEventListener('click', (e) => {
+      if (rows.length === 0) return;
+      // Convert volume → weight for the tracker (which stores lbs)
+      const payload = rows
+        .filter((r) => r.volume > 0)
+        .map((r) => {
+          const m = MATERIALS.find((x) => x.name === r.name);
+          const weight = m ? Math.round(r.volume * m.density) : 0;
+          return { name: r.name, weight, volume: r.volume, cn: m?.cn };
+        });
+      try {
+        sessionStorage.setItem('soildetective.draftRecipe', JSON.stringify({
+          ingredients: payload,
+          computedCN: parseFloat(cnValueEl.textContent) || null,
+          totalWeight: parseFloat(totalWeightEl.textContent) || 0,
+          totalVolume: parseFloat(totalVolumeEl.textContent) || 0,
+        }));
+      } catch {}
+    });
+
+    // Seed with a balanced ~250-gal starter recipe
+    rows.push(makeRow('Straw (wheat / oat)', 100));
+    rows.push(makeRow('Dry leaves', 100));
+    rows.push(makeRow('Vegetable / kitchen scraps', 15));
+    rows.push(makeRow('Aged manure (any)', 30));
+    rows.push(makeRow('Coffee grounds', 5));
+    render();
+  </script>
+</BaseLayout>

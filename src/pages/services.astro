@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const scope = `${cdn}/03ce3214-9cd9-44dc-bbb6-a9f13e2adf9b/Scope+n+Monitor.jpg?format=1500w`;
+const amoeba = `${cdn}/18134adc-1d95-4a9d-8040-760c25e2eddd/Sept+22+2025.Amoeba+n+cyst.jpg?format=1500w`;
+const garden = `${cdn}/145735a9-0f67-4282-97dd-957d7db71867/20230508_121328.jpg?format=1500w`;
+
+const services = [
+  { badge: 'Drop-in', name: 'Soil Lab Sundays', price: '$50', sub: 'per Soil Health Check', image: scope, body: 'Drop-in microscopy on Sundays, 11 AM – 4 PM (other times by booking). One-on-one at the scope with plain-English explanations of what is — and is not — alive in your soil. Scholarships available.' },
+  { badge: 'Most popular', name: 'Biological Soil Analysis', price: '$110', sub: 'includes 15-min consultation', image: amoeba, body: 'Comprehensive quantification of bacteria, fungi, protozoa, and nematodes — with reference numbers for the crop or plant type you want to grow.' },
+  { badge: 'Add-on', name: 'Comparison Mixed-Media Report', price: '+ add-on', sub: 'pairs with the analysis above', image: garden, body: 'Digital photos and short videos comparing your sample to healthy soil food web biology, alongside your standard report. The fastest way to see what your soil is missing.' },
+];
+---
+<BaseLayout title="Soil Testing — Soil Detective" description="Biological soil analysis, drop-in microscopy, and food-web reporting from Soil Detective in Olympia, WA.">
+  <section class="container-x pt-20 pb-12">
+    <p class="eyebrow mb-4">Soil Testing</p>
+    <h1 class="text-5xl md:text-6xl max-w-3xl">
+      Know your soil. <span class="italic text-moss-700">Grow your best.</span>
+    </h1>
+    <p class="mt-6 text-soil/75 max-w-prose leading-relaxed">
+      A chemical test tells you what's there. A biological test tells you what's working. We pair microscope-based assessment with personalized guidance — distinct from a chemical-only lab, and rooted in your local conditions.
+    </p>
+  </section>
+
+  <section class="container-x pb-16">
+    <div class="grid md:grid-cols-3 gap-6">
+      {services.map((s) => (
+        <article class="rounded-xl bg-cream-dark/30 border border-soil/10 overflow-hidden flex flex-col">
+          <div class="aspect-[16/10] overflow-hidden bg-soil-700">
+            <img src={s.image} alt={s.name} class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-6 flex flex-col flex-1">
+            <span class="self-start text-[10px] uppercase tracking-[0.2em] text-clay-500 bg-clay-500/10 px-2.5 py-1 rounded-full">{s.badge}</span>
+            <h2 class="mt-4 text-xl uppercase tracking-wide">{s.name}</h2>
+            <div class="mt-2">
+              <span class="font-display text-3xl text-soil">{s.price}</span>
+              <span class="text-soil/60 text-sm"> · {s.sub}</span>
+            </div>
+            <p class="mt-4 text-soil/75 text-sm leading-relaxed flex-1">{s.body}</p>
+            <a href={link('/contact')} class="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-clay-500 hover:text-clay-700">Book or ask a question →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-cream-dark/30 border-y border-soil/5">
+    <div class="container-x py-20 grid md:grid-cols-2 gap-12 items-start">
+      <div>
+        <p class="eyebrow-moss mb-4">Why biology</p>
+        <h2 class="text-4xl md:text-5xl">The microbes are doing the work.</h2>
+        <p class="mt-5 text-soil/80 leading-relaxed max-w-prose">
+          Most labs measure nutrient stockpiles. We look through a microscope at the organisms that make those nutrients plant-available — and at the structure they're building. That's what regenerative growing actually depends on.
+        </p>
+      </div>
+      <ul class="space-y-4 text-soil">
+        <li class="flex gap-4 items-start"><span class="mt-2 size-2 rounded-full bg-moss-600"></span><span><strong>Personalized.</strong> Reference targets are tied to the crop or plant you intend to grow.</span></li>
+        <li class="flex gap-4 items-start"><span class="mt-2 size-2 rounded-full bg-moss-600"></span><span><strong>Local.</strong> Calibrated to Western Washington soils and seasons.</span></li>
+        <li class="flex gap-4 items-start"><span class="mt-2 size-2 rounded-full bg-moss-600"></span><span><strong>Actionable.</strong> Every report comes with a conversation about next steps — compost, cover crops, irrigation, or leaving well enough alone.</span></li>
+        <li class="flex gap-4 items-start"><span class="mt-2 size-2 rounded-full bg-moss-600"></span><span><strong>Accessible.</strong> Scholarships available for Soil Lab Sundays — just ask.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-x py-20">
+    <div class="rounded-2xl bg-plum-700 text-cream p-10 md:p-14 grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+      <div>
+        <h2 class="text-3xl md:text-4xl text-cream">Curious who is in your soil?</h2>
+        <p class="mt-4 text-cream/85 max-w-prose">
+          Bring a sample to a Soil Lab Sunday or schedule a full Biological Soil Analysis. We'll figure out what you're working with — and what to do next.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href={link('/contact')} class="btn-gold">Book a Soil Check</a>
+        <a href="mailto:soildetective@gmail.com" class="btn-outline-cream">Email us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
