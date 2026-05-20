@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}${p}`;
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/689393086346c340c753f950';
+const heroRoots = `${cdn}/1762364292639-RZSGO2RFTH8LGI6QLX1L/unsplash-image-VmpL-3rZfHQ.jpg?format=2500w`;
+
+const today = new Date('2026-05-19').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const tiers = [
+  { n: '01', name: 'Local services', revenue: 'Hourly / per-test', margin: 'Medium', scale: 'Limited', current: true },
+  { n: '02', name: 'Workshops & events', revenue: 'Per-seat / sponsorship', margin: 'High', scale: 'Medium', current: 'partial' },
+  { n: '03', name: 'Membership / community', revenue: 'Recurring subscriptions', margin: 'Very High', scale: 'High', current: false },
+  { n: '04', name: 'Digital education', revenue: 'Courses, PDFs, kits', margin: 'Extremely High', scale: 'Extremely High', current: false },
+  { n: '05', name: 'Premium consulting / B2B', revenue: 'Project & retainer', margin: 'Very High', scale: 'Medium', current: false },
+];
+
+const journey = [
+  { stage: 'Curious', goal: 'Learn', surface: 'Soil 101, Soil Cam, newsletter' },
+  { stage: 'Interested', goal: 'Attend', surface: 'Soil Lab Sundays · $45 entry' },
+  { stage: 'Invested', goal: 'Buy a result', surface: 'Packages · $199–$1,250' },
+  { stage: 'Engaged', goal: 'Subscribe', surface: 'The Soil Circle · $15/mo' },
+  { stage: 'Evangelist', goal: 'Share', surface: 'Pay-it-forward, referrals, sample submissions' },
+];
+
+const beforeAfter = [
+  { area: 'Positioning', before: '"Soil testing & workshops" — services menu', after: '"A community-centered soil health ecosystem" — layered system' },
+  { area: 'Pricing — Lab Sundays', before: '$50 flat', after: '$45 entry, rolls into membership credit' },
+  { area: 'Pricing — Full Analysis', before: '$110', after: '$159 with PDF, imagery, member dashboard upload' },
+  { area: 'Packages', before: 'None', after: 'Backyard Revival $399 · Raised Bed Reset $199 · Market Garden Audit from $1,250' },
+  { area: 'Recurring revenue', before: 'Implicit / loose', after: 'Free Community · Soil Circle $15/mo · Premium Grower $59/mo' },
+  { area: 'Content strategy', before: 'Static informational pages', after: '/soil-cam content engine + member-only deep dives' },
+  { area: 'Conversion funnel', before: 'No clear path', after: 'Homepage funnel: Curious → Interested → Invested → Engaged → Evangelist' },
+  { area: 'Community tools', before: 'None', after: 'Recipe builder, pile tracker, tool barn, example recipes — all free' },
+];
+
+const launched = [
+  { what: 'Soil Testing repriced + 3 outcome packages', where: '/services' },
+  { what: 'Memberships rebuilt: Free Community, Soil Circle ($15/mo), Premium Grower ($59/mo)', where: '/memberships' },
+  { what: 'Homepage repositioned with 5-step conversion funnel', where: '/' },
+  { what: 'Soil Cam content hub with member gating', where: '/soil-cam' },
+  { what: 'Annual Soil Health Membership upsell on Soil Testing', where: '/services' },
+  { what: 'Free community tools live — recipe builder, pile tracker, tool barn, example recipes', where: '/community' },
+];
+
+const next = [
+  { window: 'Next 30 days', items: [
+    'Wire up Stripe (or Memberful / Patreon) for the two paid tiers',
+    'Pick a portal stack — Notion + Tally for v1, Supabase/Memberstack for v2',
+    'Film & post 4 free Soil Cam episodes (one per week) on YouTube Shorts + Instagram Reels',
+    'Add a real signup → confirmation flow to replace mailto: forms',
+  ] },
+  { window: 'Next 60 days', items: [
+    'Launch the member dashboard (analysis archive + image gallery)',
+    'Pilot Backyard Revival package with 3 local growers — capture testimonials',
+    'Start the newsletter cadence (twice monthly, seasonal)',
+    'Establish 2 partnerships — one nursery, one farmers market',
+  ] },
+  { window: 'Next 90 days', items: [
+    'Release first paid digital product: "Build Living Compost at Home" mini-course ($79)',
+    'Host first "Compost & Coffee" community morning',
+    'Open a quarterly "Market Garden Audit" cohort for 2 growers',
+    'Review pricing — likely room to raise once dashboard ships',
+  ] },
+];
+---
+<BaseLayout title="Strategy Brief — Soil Detective" description="A strategic restructuring of the Soil Detective website to support a layered, recurring-revenue ecosystem.">
+  <!-- COVER -->
+  <section class="relative overflow-hidden bg-soil-900 text-cream">
+    <div class="absolute inset-0">
+      <img src={heroRoots} alt="" class="w-full h-full object-cover opacity-20" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-b from-soil-900/80 via-soil-900/85 to-soil-900"></div>
+    </div>
+    <div class="container-x pt-20 pb-24 md:pt-24 md:pb-28 relative">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-500 mb-6">Strategy Brief · Prepared for Soil Detective LLC</p>
+      <h1 class="text-5xl md:text-7xl text-cream max-w-4xl leading-[1.02]">
+        From a services menu to a <span class="italic text-moss-300">soil health ecosystem.</span>
+      </h1>
+      <p class="mt-8 text-cream/85 max-w-2xl text-lg leading-relaxed">
+        A restructured website built around layered revenue, recurring relationships, and a clear path from curious neighbor to lifelong member.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-8 text-sm text-cream/70 pt-8 border-t border-cream/15">
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500">Prepared</p>
+          <p class="mt-1 text-cream">{today}</p>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500">Format</p>
+          <p class="mt-1 text-cream">Strategic restructure + live site</p>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gold-500">Status</p>
+          <p class="mt-1 text-cream">Shipped · ready for owner review</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE OF CONTENTS -->
+  <section class="container-x py-12 border-b border-soil/10">
+    <p class="eyebrow-moss mb-4">Contents</p>
+    <ol class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 text-soil/75 text-sm">
+      <li><span class="text-soil/40 font-mono mr-3">01</span><a href="#situation" class="hover:text-moss-700">Where Soil Detective stands today</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">02</span><a href="#shift" class="hover:text-moss-700">The strategic shift</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">03</span><a href="#ladder" class="hover:text-moss-700">The 5-tier revenue ladder</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">04</span><a href="#funnel" class="hover:text-moss-700">The customer journey</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">05</span><a href="#changes" class="hover:text-moss-700">What changed on the site</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">06</span><a href="#before-after" class="hover:text-moss-700">Before / After at a glance</a></li>
+      <li><span class="text-soil/40 font-mono mr-3">07</span><a href="#next" class="hover:text-moss-700">30 / 60 / 90 day next steps</a></li>
+    </ol>
+  </section>
+
+  <!-- 01 SITUATION -->
+  <section id="situation" class="container-x py-20">
+    <p class="font-mono text-soil/40 text-xs tracking-widest mb-3">01 — SITUATION</p>
+    <h2 class="text-4xl md:text-5xl max-w-3xl">A rare middle ground — and an underbuilt business model.</h2>
+    <div class="mt-8 grid lg:grid-cols-[1.3fr_1fr] gap-10">
+      <div class="space-y-4 text-soil/80 leading-relaxed">
+        <p>
+          Soil Detective has the hardest part already — authenticity, differentiation, and emotional resonance. Most regenerative-agriculture brands collapse into one of four traps: too academic, too hobbyist, too political, or too broad. Soil Detective sits in a rare middle ground that is scientifically interesting, visually compelling, locally rooted, emotionally meaningful, community-oriented, and adjacent to several high-margin categories.
+        </p>
+        <p>
+          The site, however, currently behaves more like a mission project than a structured business. There is no recurring revenue engine, no productized outcomes, and no clear path from a curious newsletter reader to a long-term member. The pricing also undersells the niche expertise being offered.
+        </p>
+        <p>
+          The fix is not "more content." It is a structural one: the site needs to evolve from <em>"here are some services and workshops"</em> into <em>"here is an ecosystem people enter, participate in, and identify with."</em>
+        </p>
+      </div>
+      <aside class="rounded-2xl bg-cream-dark/40 border border-soil/10 p-7">
+        <p class="eyebrow-moss mb-3">The principle</p>
+        <p class="font-display text-2xl text-soil leading-snug">Do not monetize information alone. Monetize access, interpretation, community, transformation, identity, and convenience.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 02 SHIFT -->
+  <section id="shift" class="bg-soil-700 text-cream">
+    <div class="container-x py-20">
+      <p class="font-mono text-gold-500/70 text-xs tracking-widest mb-3">02 — THE SHIFT</p>
+      <h2 class="text-4xl md:text-5xl text-cream max-w-3xl">From transactional to relational.</h2>
+      <div class="mt-12 grid md:grid-cols-2 gap-8">
+        <div class="rounded-2xl bg-cream/5 border border-cream/15 p-8">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-cream/50 mb-2">Before</p>
+          <p class="font-display text-3xl text-cream">A services menu.</p>
+          <ul class="mt-6 space-y-3 text-sm text-cream/75">
+            <li class="flex gap-2"><span class="text-clay-300">·</span> Pay-per-test pricing</li>
+            <li class="flex gap-2"><span class="text-clay-300">·</span> No recurring revenue</li>
+            <li class="flex gap-2"><span class="text-clay-300">·</span> Customer disappears after the analysis</li>
+            <li class="flex gap-2"><span class="text-clay-300">·</span> Static informational pages</li>
+            <li class="flex gap-2"><span class="text-clay-300">·</span> No clear funnel</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-gold-500/15 border border-gold-500/40 p-8">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-gold-400 mb-2">After</p>
+          <p class="font-display text-3xl text-cream">A soil health ecosystem.</p>
+          <ul class="mt-6 space-y-3 text-sm text-cream/85">
+            <li class="flex gap-2"><span class="text-gold-400">·</span> Free → entry → packages → membership ladder</li>
+            <li class="flex gap-2"><span class="text-gold-400">·</span> Recurring monthly revenue from The Soil Circle & Premium Grower</li>
+            <li class="flex gap-2"><span class="text-gold-400">·</span> Soil Intelligence Portal for ongoing tracking</li>
+            <li class="flex gap-2"><span class="text-gold-400">·</span> Soil Cam content engine drives discovery</li>
+            <li class="flex gap-2"><span class="text-gold-400">·</span> Clear 5-step customer journey on the homepage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 REVENUE LADDER -->
+  <section id="ladder" class="container-x py-20">
+    <p class="font-mono text-soil/40 text-xs tracking-widest mb-3">03 — REVENUE LADDER</p>
+    <h2 class="text-4xl md:text-5xl max-w-3xl">Five tiers. One ecosystem.</h2>
+    <p class="mt-5 text-soil/75 max-w-2xl leading-relaxed">
+      The business currently lives almost entirely in Tier 1. Long-term growth comes from extending up the ladder — particularly into Tiers 3 and 4, where margins and scalability compound.
+    </p>
+    <div class="mt-12 space-y-3">
+      {tiers.map((t) => (
+        <div class={`rounded-2xl border p-6 grid grid-cols-[64px_1fr_auto] md:grid-cols-[80px_1.4fr_1fr_1fr_1fr] gap-4 items-center transition ${t.current === true ? 'border-clay-500/50 bg-clay-500/5' : t.current === 'partial' ? 'border-gold-500/50 bg-gold-500/5' : 'border-soil/15 bg-cream-dark/30'}`}>
+          <span class="font-display text-4xl text-soil/30">{t.n}</span>
+          <div>
+            <p class="font-display text-xl text-soil leading-snug">{t.name}</p>
+            <p class="text-soil/60 text-sm md:hidden mt-1">{t.revenue}</p>
+            {t.current === true && <span class="inline-block mt-1 text-[10px] uppercase tracking-[0.18em] text-clay-700 bg-clay-500/15 px-2 py-0.5 rounded-full">Currently here</span>}
+            {t.current === 'partial' && <span class="inline-block mt-1 text-[10px] uppercase tracking-[0.18em] text-gold-700 bg-gold-500/15 px-2 py-0.5 rounded-full">Partially here</span>}
+            {t.current === false && <span class="inline-block mt-1 text-[10px] uppercase tracking-[0.18em] text-moss-700 bg-moss-700/10 px-2 py-0.5 rounded-full">Growth zone</span>}
+          </div>
+          <div class="hidden md:block text-sm">
+            <p class="text-[10px] uppercase tracking-[0.18em] text-soil/40">Revenue type</p>
+            <p class="mt-1 text-soil/80">{t.revenue}</p>
+          </div>
+          <div class="hidden md:block text-sm">
+            <p class="text-[10px] uppercase tracking-[0.18em] text-soil/40">Margin</p>
+            <p class="mt-1 text-soil/80">{t.margin}</p>
+          </div>
+          <div class="hidden md:block text-sm">
+            <p class="text-[10px] uppercase tracking-[0.18em] text-soil/40">Scalability</p>
+            <p class="mt-1 text-soil/80">{t.scale}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 04 FUNNEL -->
+  <section id="funnel" class="bg-cream-dark/30 border-y border-soil/10">
+    <div class="container-x py-20">
+      <p class="font-mono text-soil/40 text-xs tracking-widest mb-3">04 — JOURNEY</p>
+      <h2 class="text-4xl md:text-5xl max-w-3xl">A clear path from curious to evangelist.</h2>
+      <p class="mt-5 text-soil/75 max-w-2xl leading-relaxed">
+        Every section of the homepage now points to one of these five stages. People can start anywhere, but the path is visible.
+      </p>
+      <ol class="mt-12 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        {journey.map((s, i, arr) => (
+          <li class="relative rounded-2xl bg-cream border border-soil/10 p-6 h-full">
+            <span class="font-display text-3xl text-clay-500">{String(i + 1).padStart(2, '0')}</span>
+            <p class="mt-3 font-display text-lg uppercase tracking-wide">{s.stage}</p>
+            <p class="mt-1 text-soil/60 text-xs uppercase tracking-[0.15em]">{s.goal}</p>
+            <p class="mt-3 text-soil/75 text-sm leading-relaxed">{s.surface}</p>
+            {i < arr.length - 1 && (
+              <span class="hidden lg:block absolute top-1/2 -right-3 -translate-y-1/2 text-soil/25" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 05 CHANGES -->
+  <section id="changes" class="container-x py-20">
+    <p class="font-mono text-soil/40 text-xs tracking-widest mb-3">05 — WHAT WE SHIPPED</p>
+    <h2 class="text-4xl md:text-5xl max-w-3xl">What changed on the site.</h2>
+    <p class="mt-5 text-soil/75 max-w-2xl leading-relaxed">
+      All live now. Click any item to see the page.
+    </p>
+    <div class="mt-12 grid md:grid-cols-2 gap-4">
+      {launched.map((l, i) => (
+        <a href={link(l.where)} class="group rounded-2xl bg-cream-dark/30 border border-soil/10 p-6 hover:border-moss-700/40 transition flex gap-5 items-start">
+          <span class="font-display text-3xl text-moss-700 shrink-0 w-10">{String(i + 1).padStart(2, '0')}</span>
+          <div class="flex-1">
+            <p class="text-soil leading-snug">{l.what}</p>
+            <p class="mt-2 text-[10px] uppercase tracking-[0.2em] text-clay-500 group-hover:text-clay-700">View page · {l.where}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 06 BEFORE / AFTER -->
+  <section id="before-after" class="bg-soil-700 text-cream">
+    <div class="container-x py-20">
+      <p class="font-mono text-gold-500/70 text-xs tracking-widest mb-3">06 — BEFORE / AFTER</p>
+      <h2 class="text-4xl md:text-5xl text-cream max-w-3xl">At a glance.</h2>
+      <div class="mt-12 overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[640px]">
+          <thead>
+            <tr class="text-[10px] uppercase tracking-[0.22em] text-cream/50">
+              <th class="pb-4 pr-6 font-medium w-1/4">Area</th>
+              <th class="pb-4 pr-6 font-medium w-1/3">Before</th>
+              <th class="pb-4 font-medium">After</th>
+            </tr>
+          </thead>
+          <tbody>
+            {beforeAfter.map((row) => (
+              <tr class="border-t border-cream/10 align-top">
+                <td class="py-4 pr-6 font-display text-cream text-lg">{row.area}</td>
+                <td class="py-4 pr-6 text-cream/65 text-sm leading-relaxed">{row.before}</td>
+                <td class="py-4 text-cream text-sm leading-relaxed">{row.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 NEXT STEPS -->
+  <section id="next" class="container-x py-20">
+    <p class="font-mono text-soil/40 text-xs tracking-widest mb-3">07 — NEXT STEPS</p>
+    <h2 class="text-4xl md:text-5xl max-w-3xl">30 / 60 / 90.</h2>
+    <p class="mt-5 text-soil/75 max-w-2xl leading-relaxed">
+      The site is staged for the next moves. None of them require huge investment, but each one compounds.
+    </p>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      {next.map((block, i) => (
+        <div class={`rounded-2xl p-7 border ${i === 0 ? 'bg-moss-700 text-cream border-moss-800' : i === 1 ? 'bg-cream-dark/30 text-soil border-soil/10' : 'bg-cream-dark/30 text-soil border-soil/10'}`}>
+          <p class={`text-[11px] font-semibold uppercase tracking-[0.22em] mb-3 ${i === 0 ? 'text-gold-500' : 'text-clay-500'}`}>{block.window}</p>
+          <ul class={`space-y-3 text-sm leading-relaxed ${i === 0 ? 'text-cream/90' : 'text-soil/80'}`}>
+            {block.items.map((it) => (
+              <li class="flex gap-3 items-start"><span class={`mt-2 size-1.5 rounded-full shrink-0 ${i === 0 ? 'bg-gold-500' : 'bg-moss-600'}`}></span><span>{it}</span></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section class="container-x pb-24">
+    <div class="rounded-3xl bg-gradient-to-br from-soil-900 to-moss-800 text-cream p-10 md:p-16 text-center">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-500 mb-4">In one line</p>
+      <h2 class="font-display text-3xl md:text-5xl text-cream max-w-3xl mx-auto leading-tight">
+        Soil testing is the entry point. <span class="italic text-moss-300">The community is the business.</span>
+      </h2>
+      <div class="mt-10 flex flex-wrap gap-3 justify-center">
+        <a href={link('/')} class="btn-gold">Tour the homepage</a>
+        <a href={link('/memberships')} class="btn-outline-cream">See the new memberships</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
