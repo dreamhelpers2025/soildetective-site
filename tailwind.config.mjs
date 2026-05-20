@@ -33,8 +33,8 @@ export default {
           300: '#cf8e85',
         },
         cream: {
-          DEFAULT: '#F4F1EA',
-          dark: '#e8e2d3',
+          DEFAULT: '#F9F5EF',
+          dark: '#EDE6D8',
         },
         plum: {
           DEFAULT: '#6A4C6D',
