@@ -48,10 +48,16 @@
   }
 
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-clay;
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-plum-700;
   }
   .eyebrow-moss {
     @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-moss-700;
+  }
+  .eyebrow-clay {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-clay;
+  }
+  .link-brand {
+    @apply text-plum-700 hover:text-plum-800 font-medium transition;
   }
   .nav-link {
     @apply text-[12px] font-semibold uppercase tracking-[0.18em] text-soil/80 hover:text-soil transition;
