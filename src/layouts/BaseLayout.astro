@@ -21,10 +21,26 @@ const {
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Font strategy:
+      - Inter: body text (Google Fonts, free)
+      - Caveat: tasteful handwritten accents (Google Fonts, free)
+      - Lobster: PLACEHOLDER for Flower Power until Rosalinda's Adobe Fonts kit ID lands
+      - Flower Power: Rosalinda's chosen headline font; loaded via Adobe Fonts when kit ID is provided
+    -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@400;600&family=Lobster&display=swap"
       rel="stylesheet"
     />
+    <!--
+      TODO: replace the Lobster placeholder above with Flower Power from Rosalinda's Adobe Fonts kit.
+      Once she has added Flower Power to her kit and shared the kit ID, uncomment + fill below:
+
+      <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css">
+
+      The Tailwind 'font-display' class already lists 'flower-power' before Lobster,
+      so the moment the kit loads, all headlines automatically switch.
+    -->
   </head>
   <body>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:bg-white focus:px-3 focus:py-2 focus:rounded">Skip to content</a>
